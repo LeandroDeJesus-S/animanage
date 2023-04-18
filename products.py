@@ -3,7 +3,9 @@ import re
 
 import requests, bs4
 
+
 from interfaces import MovieInterface, SerieInterface
+from requester.interfaces import RequesterInterface
 
 
 class AnimesonlineMovie(MovieInterface):
@@ -24,12 +26,11 @@ class AnimesonlineMovie(MovieInterface):
 
 
 class AnimesonlineSerie(SerieInterface):
-    def __init__(self, link: str, parsers, requesters) -> None:
-        super().__init__(link, parsers, requesters)
+    def __init__(self, link: str, parsers, requester: RequesterInterface) -> None:
+        super().__init__(link, parsers, requester)
         self.link = link
+        self.requester = requester.get_content(link)
         self.parsers: bs4.BeautifulSoup = parsers
-        self.requesters: requests = requesters
-        self.res = self.requesters.get(self.link).content
         self.parse = self.parsers(self.res, 'html.parser')
         
         self.last_season = 0
