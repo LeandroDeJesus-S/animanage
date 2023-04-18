@@ -16,5 +16,3 @@ class RequesterInterface(ABC):
 
         rType: bytes or str: 
         """
-        pass
-    
