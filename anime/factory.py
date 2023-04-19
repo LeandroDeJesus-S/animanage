@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import products
+import anime.products as products
 
 
 class Factory(ABC):
