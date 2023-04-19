@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Sequence, Any
 
 
 class ParserInterface(ABC):
@@ -7,7 +8,7 @@ class ParserInterface(ABC):
         self, content: bytes|str, query: str, 
         text: bool=False, attr: str|None=None,
         **kwargs
-    ): 
+    ) -> str | None | Any: 
         """Perform a CSS selection operation on the current element
 
         Args:
@@ -28,7 +29,7 @@ class ParserInterface(ABC):
         self, content: bytes|str, query: str, 
         text: bool=False, attr: str|None=None,
         **kwargs
-    ):
+    ) -> list[str] | Sequence | None | Any:
         """Perform a CSS selection operation on the current element
 
         Args:

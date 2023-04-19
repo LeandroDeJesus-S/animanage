@@ -4,7 +4,7 @@ from typing import Literal
 class RequesterInterface(ABC):
         
     @abstractmethod
-    def get_content(self,url: str, type: Literal['bytes', 'text']='bytes') -> bytes | str:
+    def get_content(self,url: str, type: Literal['bytes', 'text']='bytes', **kwargs) -> bytes | str:
         """Do a get request and return the content in the given type
 
         Args:
