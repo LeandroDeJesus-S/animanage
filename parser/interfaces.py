@@ -29,7 +29,7 @@ class ParserInterface(ABC):
         self, content: bytes|str, query: str, 
         text: bool=False, attr: str|None=None,
         **kwargs
-    ) -> list[str] | Sequence | None | Any:
+    ) -> list[str] | list[Any] | None:
         """Perform a CSS selection operation on the current element
 
         Args:

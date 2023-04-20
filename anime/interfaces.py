@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict
+
 from parser.interfaces import ParserInterface
 from requester.interfaces import RequesterInterface
+from database.interface import DatabaseInterface
+
 
 class MovieInterface(ABC):
     @abstractmethod
@@ -59,4 +62,42 @@ class SerieInterface(MovieInterface):
         the format {se: {ep: link}}
 
         rType: Dict[int, Dict[int, str]]
+        """
+
+
+class ProductionsDbInterface(ABC):
+    @abstractmethod
+    def __init__(self, db_engine: DatabaseInterface) -> None:
+        """
+        Args:
+            db_engine (DatabaseInterface): engine to make database operations
+        
+        Instance attributes:
+            table (str): table name to save data
+            fields (tuple[str, ...]): table field names
+        """
+    
+    @abstractmethod
+    def save_production(self, data: list[dict[str, str | int | float]]):
+        """save the productions data in database
+        
+        Args:
+            data to save in database
+        
+        Obs:
+            The data values should have the same order as the database fields.
+        """
+    
+    @abstractmethod
+    def verify_if_exists(self, anime, insensitive: bool = False, limit: int = 60) -> bool: 
+        """verify if an data is in the database, if it's return True if not return False
+
+        Args:
+            data (str): data to verify
+            insensitive (bool, optional): if True make query with insensitive 
+            case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            bool: True if exists, False if not
         """

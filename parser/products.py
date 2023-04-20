@@ -14,6 +14,9 @@ class Bs4Parser(ParserInterface):
         if attr is not None and text:
             raise ValueError('<text> and <attr> cannot both be sent')
         
+        if not kwargs.get('features'):
+            kwargs.update({'features': 'html.parser'})
+                          
         soup = BeautifulSoup(content, **kwargs)
         result = soup.select_one(query)
         
@@ -34,6 +37,9 @@ class Bs4Parser(ParserInterface):
         if attr is not None and text:
             raise ValueError('<text> and <attr> cannot both be sent')
         
+        if not kwargs.get('features'):
+            kwargs.update({'features': 'html.parser'})
+    
         soup = BeautifulSoup(content, **kwargs)
         result = soup.select(query)
         if attr is not None and isinstance(result, ResultSet): 

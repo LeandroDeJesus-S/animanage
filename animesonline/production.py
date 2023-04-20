@@ -1,9 +1,10 @@
 from typing import List, Dict
 import re
 
-from anime.interfaces import MovieInterface, SerieInterface
+from anime.interfaces import MovieInterface, SerieInterface, ProductionsDbInterface
 from requester.interfaces import RequesterInterface
 from parser.interfaces import ParserInterface
+from database.interface import DatabaseInterface
 
 
 class AnimesonlineMovie(MovieInterface):
@@ -36,7 +37,7 @@ class AnimesonlineSerie(SerieInterface):
         
     def get_last_season(self):
         seasons = self.parser.select_all(
-            self.content, 'apan.se-t', text=True, features='html.parser'
+            self.content, 'span.se-t', text=True, features='html.parser'
         )
         if seasons is None:
             return 1
@@ -115,3 +116,28 @@ class AnimesonlineSerie(SerieInterface):
             f_links[se][ep] = link
             
         return f_links
+
+
+class SerieDb(ProductionsDbInterface):
+    def __init__(self, db_engine: DatabaseInterface) -> None:
+        super().__init__(db_engine)
+        self.db_engine = db_engine
+        
+        self.table = 'animesonline_anime'
+        self.fields = ('anime', 'link')
+        
+    def save_production(self, data: list[dict[str, str | int | float]]):
+        try:
+            for d in data:
+                self.db_engine.insert(
+                    table=self.table, 
+                    fields=self.fields, 
+                    values=(*d.values(),)
+                )
+            return True
+        
+        except Exception as error:
+            return False
+    
+    def verify_if_exists(self, anime, insensitive: bool = False, limit: int = 60) -> bool:
+        return super().verify_if_exists(anime, insensitive, limit)
