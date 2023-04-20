@@ -3,6 +3,7 @@ import re
 from release.interfaces import ReleaseScrapingInterface
 from parser.interfaces import ParserInterface
 from requester.interfaces import RequesterInterface
+from release.interfaces import ReleaseDbInterface
 
 
 class AnimesBr(ReleaseScrapingInterface):
@@ -46,3 +47,37 @@ class AnimesBr(ReleaseScrapingInterface):
             final_animes.append({'anime': a, 'rate': r})
 
         return final_animes
+
+
+class AnimeReleaseDb(ReleaseDbInterface):
+    def __init__(self, db_engine):
+        self.db = db_engine
+        self.table = 'animesbr_anime_release'
+        self.fields = ('name', 'rate')
+        
+    def save_releases(self, releases: list[dict[str, str | int |float]]) -> bool:
+        try:
+            for release in releases:
+                self.db.insert(
+                    table=self.table, 
+                    fields=self.fields, 
+                    values=(*release.values(),)
+                )
+            return True
+        
+        except Exception as error:
+            return False
+        
+    def verify_if_exists(self, data: str, insensitive: bool = False, limit: int = 60) -> bool:
+        result = self.db.select(
+            table=self.table, where=self.fields[0],
+            like=data, insensitive=insensitive, limit=limit
+        )
+
+        if len(result) == 0:
+            return False
+    
+        if data.lower() != result[0][1].lower():
+            return False
+            
+        return True

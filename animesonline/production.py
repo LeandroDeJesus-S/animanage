@@ -139,5 +139,11 @@ class SerieDb(ProductionsDbInterface):
         except Exception as error:
             return False
     
-    def verify_if_exists(self, anime, insensitive: bool = False, limit: int = 60) -> bool:
-        return super().verify_if_exists(anime, insensitive, limit)
+    def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
+        result = self.db_engine.select(
+            self.table, where=self.fields[0], like=data, 
+            insensitive=insensitive, limit=limit
+        )
+        if not result:
+            return False
+        return True

@@ -1,10 +1,11 @@
 from typing import List, Dict
 import re
 
-from anime.interfaces import MovieInterface, SerieInterface
+from anime.interfaces import SerieInterface
 from requester.interfaces import RequesterInterface
 from parser.interfaces import ParserInterface
-
+from anime.interfaces import ProductionsDbInterface
+from database.interface import DatabaseInterface
 
 class AnimesbrSerie(SerieInterface):
     def __init__(self, link: str, parser: ParserInterface, requester: RequesterInterface) -> None:
@@ -101,3 +102,35 @@ class AnimesbrSerie(SerieInterface):
             f_links[se][ep] = link
             
         return f_links
+
+
+class SerieDb(ProductionsDbInterface):
+    def __init__(self, db_engine: DatabaseInterface) -> None:
+        super().__init__(db_engine)
+        self.db_engine = db_engine
+        
+        self.table = 'animesbr_anime'
+        self.fields = ('anime', 'link')
+        
+    def save_production(self, data: list[dict[str, str | int | float]]):
+        try:
+            for d in data:
+                self.db_engine.insert(
+                    table=self.table, 
+                    fields=self.fields, 
+                    values=(*d.values(),)
+                )
+            return True
+        
+        except Exception as error:
+            return False
+    
+    def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
+        result = self.db_engine.select(
+            self.table, where=self.fields[0], like=data, 
+            insensitive=insensitive, limit=limit
+        )
+        if not result:
+            return False
+        return True
+        
