@@ -45,7 +45,6 @@ class AnimesonlineSerie(SerieInterface):
         last_season = int(re.sub(r'[^\d]', ' ', seasons[-1]).split()[0])
         self.last_season = last_season
         return last_season
-    
 
     def get_last_ep(self):
         eps = self.parser.select_all(
@@ -147,3 +146,12 @@ class SerieDb(ProductionsDbInterface):
         if not result:
             return False
         return True
+
+    def get_link(self, name: str, insensitive: bool = False, limit: int = 60) -> str:
+        result = self.db_engine.select(
+            self.table, where=self.fields[0], like=name,
+            limit=limit, insensitive=insensitive
+        )
+        if not result:
+            return ''
+        return result[0][1]

@@ -64,6 +64,14 @@ class SerieInterface(MovieInterface):
         rType: Dict[int, Dict[int, str]]
         """
 
+    @abstractmethod
+    def get_last_season(self):
+        """get and set last season value"""
+
+    @abstractmethod
+    def get_last_ep(self):
+        """get and set last ep value"""
+
 
 class ProductionsDbInterface(ABC):
     @abstractmethod
@@ -89,8 +97,8 @@ class ProductionsDbInterface(ABC):
         """
     
     @abstractmethod
-    def verify_if_exists(self, anime, insensitive: bool = False, limit: int = 60) -> bool: 
-        """verify if an data is in the database, if it's return True if not return False
+    def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
+        """verify if a data is in the database, if it's return True if not return False
 
         Args:
             data (str): data to verify
@@ -100,4 +108,18 @@ class ProductionsDbInterface(ABC):
 
         Returns:
             bool: True if exists, False if not
+        """
+
+    @abstractmethod
+    def get_link(self, name: str, insensitive: bool = False, limit: int = 60) -> str:
+        """get data from database
+
+        Args:
+            name: production name to get the link
+            insensitive (bool, optional): if True make query with insensitive
+            case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            str: link founded by name
         """

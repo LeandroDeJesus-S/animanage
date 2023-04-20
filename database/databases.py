@@ -3,49 +3,52 @@ from sqlite3 import Connection, Cursor
 
 from database.interface import DatabaseInterface, T
 
-class SQLite(DatabaseInterface):
-    def __init__(self):
-        self.connection: Connection
-        self.cursor: Cursor
-        self.connected: bool = False
 
-    def connect(self, db: str):
+class SQLite(DatabaseInterface):
+    connection = None
+    cursor = None
+    connected = False
+
+    @classmethod
+    def connect(cls, db: str):
         """cria conexão com a base de dados, e o atributo de instancia 
         self.cursor
         """
-        if self.connected:
+        if cls.connected:
             return
         
         try:
-            self.connection = sqlite3.connect(db)
-            self.cursor = self.connection.cursor()
-            self.connected = True
+            cls.connection = sqlite3.connect(db)
+            cls.cursor = cls.connection.cursor()
+            cls.connected = True
         except Exception as error:
             print('Erro durante conexão à DB:', error)
-            self.disconnect()
+            cls.disconnect()
 
-    def disconnect(self):
+    @classmethod
+    def disconnect(cls):
         """fecha o cursor e encerra a conexão com a base de dados."""
-        if not self.connected:
+        if not cls.connected:
             return
         
         try:
-            self.cursor.close()
+            cls.cursor.close()
         finally:
-            self.connection.close()
-            self.connected = False
-    
-    def insert(self, table: str, fields: tuple[str, ...], values: tuple[T, ...]):
+            cls.connection.close()
+            cls.connected = False
+
+    @classmethod
+    def insert(cls, table: str, fields: tuple[str, ...], values: tuple[T, ...]):
         try:
             cmd = f'INSERT OR IGNORE INTO {table} {fields} VALUES {values}'
-            self.cursor.execute(cmd)
-            self.connection.commit()
+            cls.cursor.execute(cmd)
+            cls.connection.commit()
         except Exception as error:
-            print('Erro:', error)
-        finally:
-            self.disconnect()
-                    
-    def select(self, table: str, limit: int=60, where: str='', 
+            print('Error:', error)
+            cls.disconnect()
+
+    @classmethod
+    def select(cls, table: str, limit: int=60, where: str= '',
                like: str='', insensitive: bool=False) -> list[tuple]:
         """faz um select * na base de dados com limit 60 por padrão.
         para retirar o limit basta passar 0 como valor
@@ -61,7 +64,7 @@ class SQLite(DatabaseInterface):
             list[tuple]: resultado da consulta
         """
         if limit and not isinstance(limit, int):
-            self.connection.close()
+            cls.connection.close()
             raise ValueError('limit must be an integer')
         
         cmd = f'SELECT * FROM {table}'
@@ -74,14 +77,15 @@ class SQLite(DatabaseInterface):
         cmd += f' LIMIT {limit}'
         
         try:
-            self.cursor.execute(cmd)
-            return self.cursor.fetchall()
+            cls.cursor.execute(cmd)
+            return cls.cursor.fetchall()
         except Exception as error:
             print('Error:', error)
-            self.disconnect()
+            cls.disconnect()
             return []
-    
-    def update(self, table: str, setField: str, 
+
+    @classmethod
+    def update(cls, table: str, setField: str,
                setValue: str, whereField: str, whereValue: str):
         """atualiza um campo da base de dados
         Args:
@@ -96,14 +100,14 @@ class SQLite(DatabaseInterface):
         value = {'setValue': setValue, 'whereValue': whereValue}
         
         try:
-            self.cursor.execute(cmd, value)
-            self.connection.commit()
+            cls.cursor.execute(cmd, value)
+            cls.connection.commit()
         except Exception as error:
             print('Error:', error)
-        finally:
-            self.disconnect()
-    
-    def delete(self, table: str, where: str, like: str):
+            cls.disconnect()
+
+    @classmethod
+    def delete(cls, table: str, where: str, like: str):
         """deleta um registro do banco de dados
         Args:
             table (str): nome da tabela
@@ -111,14 +115,13 @@ class SQLite(DatabaseInterface):
             like (str): valor do campo para identificação
         """
         if not (isinstance(where, str) and isinstance(like, str)) and isinstance(table, str):
-            self.disconnect()
+            cls.disconnect()
             raise TypeError('table, where and like must be strings')
         
         cmd = f'DELETE FROM {table} WHERE {where} LIKE "{like}"'
         try:
-            self.cursor.execute(cmd)
-            self.connection.commit()
+            cls.cursor.execute(cmd)
+            cls.connection.commit()
         except Exception as error:
             print('Error:', error)
-        finally:
-            self.disconnect()
+            cls.disconnect()

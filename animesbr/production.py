@@ -1,3 +1,4 @@
+from time import sleep
 from typing import List, Dict
 import re
 
@@ -6,6 +7,7 @@ from requester.interfaces import RequesterInterface
 from parser.interfaces import ParserInterface
 from anime.interfaces import ProductionsDbInterface
 from database.interface import DatabaseInterface
+
 
 class AnimesbrSerie(SerieInterface):
     def __init__(self, link: str, parser: ParserInterface, requester: RequesterInterface) -> None:
@@ -30,7 +32,6 @@ class AnimesbrSerie(SerieInterface):
         last_season = int(re.sub(r'[^\d]', ' ', seasons[-1]).split()[0])
         self.last_season = last_season
         return last_season
-    
 
     def get_last_ep(self):
         default = 1
@@ -112,18 +113,23 @@ class SerieDb(ProductionsDbInterface):
         self.table = 'animesbr_anime'
         self.fields = ('anime', 'link')
         
-    def save_production(self, data: list[dict[str, str | int | float]]):
+    def save_production(self, data: list[dict[str, str | int | float]]) -> bool:
         try:
+            self.db_engine.connect('db.sqlite')
             for d in data:
                 self.db_engine.insert(
                     table=self.table, 
                     fields=self.fields, 
                     values=(*d.values(),)
                 )
+                sleep(.3)
             return True
         
         except Exception as error:
+            print('[save_production]:', error)
             return False
+        finally:
+            self.db_engine.disconnect()
     
     def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
         result = self.db_engine.select(
@@ -133,4 +139,13 @@ class SerieDb(ProductionsDbInterface):
         if not result:
             return False
         return True
-        
+
+    def get_link(self, name: str, insensitive: bool = False, limit: int = 60) -> str:
+        result = self.db_engine.select(
+            self.table, where=self.fields[0], like=name,
+            limit=limit, insensitive=insensitive
+        )
+        print('get_link:', result)
+        if not result:
+            return ''
+        return result[0][1]

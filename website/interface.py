@@ -6,8 +6,11 @@ from release.interfaces import ReleaseScrapingInterface
 class SiteInterface(ABC):
     @abstractmethod
     def __init__(self, parser, requester) -> None:
-            self.parser = parser
-            self.requester = requester
+        self.parser = parser
+        self.requester = requester
+
+        self.table: str
+        self.fields: tuple[str, ...]
         
     @abstractmethod
     def get_anime(self, url: str) -> SerieInterface:
@@ -27,7 +30,22 @@ class SiteInterface(ABC):
     @abstractmethod
     def get_anime_releases(self) -> list[dict[str, str | int | float]]:
         """return list of anime releases in a dictionary format"""
-        
+
+    @staticmethod
+    @abstractmethod
+    def get_series_db(db_engine):
+        """return series database object"""
+
+    @staticmethod
+    @abstractmethod
+    def get_ep_releases_db(db_engine):
+        """return ep release database object"""
+
+    @staticmethod
+    @abstractmethod
+    def get_anime_releases_db(db_engine):
+        """return an anime release database object"""
+
     
 class SiteWithMovieInterface(SiteInterface):
     @abstractmethod

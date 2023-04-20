@@ -52,7 +52,7 @@ class AnimeReleaseDb(ReleaseDbInterface):
     def __init__(self, db_engine):
         self.db = db_engine
         self.table = 'animesonline_anime_release'
-        self.fields = ('name', 'rate')
+        self.fields = ('anime', 'rate')
         
     def save_releases(self, releases: list[dict[str, str | int |float]]) -> bool:
         try:
@@ -72,11 +72,7 @@ class AnimeReleaseDb(ReleaseDbInterface):
             table=self.table, where=self.fields[0],
             like=data, insensitive=insensitive, limit=limit
         )
-
-        if len(result) == 0:
-            return False
-    
-        if data.lower() != result[0][1].lower():
+        if not result:
             return False
             
         return True

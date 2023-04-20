@@ -5,35 +5,36 @@ T = Union[str, int, float]
 
 
 class DatabaseInterface(ABC):
-    @abstractmethod
-    def __init__(self) -> None:
-        """Instance Attrs:
-            connection: receives the database connection 
-            cursor: the cursor object to make operations
-        """
-        self.connection: Any
-        self.cursor: Any
-        
-    @abstractmethod
-    def connect(self, db: str): pass
-    
-    @abstractmethod
-    def disconnect(self): pass
+    connection = None
+    cursor = None
+    connected = None
 
+    @classmethod
     @abstractmethod
-    def insert(self, table: str, fields: Tuple[str, ...], values: Tuple[T, ...]):
+    def connect(cls, db: str): pass
+
+    @classmethod
+    @abstractmethod
+    def disconnect(cls): pass
+
+    @classmethod
+    @abstractmethod
+    def insert(cls, table: str, fields: Tuple[str, ...], values: Tuple[T, ...]):
         pass
-    
+
+    @classmethod
     @abstractmethod
-    def select(self, table: str, limit: int=60, where: str='', 
+    def select(cls, table: str, limit: int=60, where: str='',
                like: str='', insensitive: bool=False) -> List[tuple]:
         pass
-    
+
+    @classmethod
     @abstractmethod
-    def update(self, table: str, setField: str, 
+    def update(cls, table: str, setField: str,
                setValue: str, whereField: str, whereValue: str):
         pass
-    
+
+    @classmethod
     @abstractmethod
-    def delete(self, table: str, where: str, like: str):
+    def delete(cls, table: str, where: str, like: str):
         pass

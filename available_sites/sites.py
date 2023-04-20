@@ -1,21 +1,18 @@
 from enum import Enum
-from typing import Literal
 
 from parser.factory import Parsers
 from requester.factory import Requesters
-from website.interface import SiteInterface
 
-from animesbr import animesbr
-from animesonline import animesonline
-from animesbr.animesbr import AnimesBr
+from animesonline.site import Animesonline
+from animesbr.site import AnimesBr
 
 parser = Parsers.use_bs4()
 requester = Requesters.use_requests()
 
 
 class Sites(Enum):
-    animesonline = animesonline.Animesonline(parser, requester)
-    animesbr = animesbr.AnimesBr(parser, requester)
+    animesonline = Animesonline(parser, requester)
+    animesbr = AnimesBr(parser, requester)
     
     
 def show_sites():

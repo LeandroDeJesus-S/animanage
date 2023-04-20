@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from animesonline.production import AnimesonlineSerie
 from animesbr.production import AnimesbrSerie
 
@@ -8,20 +9,22 @@ class FactoryMovie(ABC):
     @abstractmethod
     def get_movie(url: str, parser, requester):
         """return a movie object"""
-        
+
+
 class FactorySerie(ABC):
     @staticmethod
     @abstractmethod
     def get_serie(url: str, parser, requester):
         """return a serie object"""
-        
+
+
 class FactoryProduction(FactoryMovie, FactorySerie):
     @staticmethod
     @abstractmethod
     def get_serie(url: str, parser, requester):
         """return a serie object"""
         pass
-    
+
     @staticmethod
     @abstractmethod
     def get_movie(url: str, parser, requester):

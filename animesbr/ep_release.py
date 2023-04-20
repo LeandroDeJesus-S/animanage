@@ -28,7 +28,7 @@ class Animesbr(ReleaseScrapingInterface):
             if titles is None:
                 return [{}]
             
-            releases.append([{'title': i} for i in titles])
+            releases += [{'title': i} for i in titles]
             
         return releases
 
@@ -57,7 +57,6 @@ class EpisodeReleaseDb(ReleaseDbInterface):
             table=self.table, where=self.fields[0],
             like=data, insensitive=insensitive, limit=limit
         )
-
-        if len(result) == 0:
+        if not result:
             return False
         return True
