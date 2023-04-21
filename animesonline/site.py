@@ -4,14 +4,14 @@ from animesonline.ep_release import EpisodeReleaseDb
 from animesonline.production import SerieDb
 from release.factory import AnimesonlineReleases
 from website.interface import SiteInterface
-
+from anime.interfaces import SerieInterface
 
 class Animesonline(SiteInterface):
     def __init__(self, parser, requester) -> None:
         self.parser = parser
         self.requester = requester
 
-    def get_anime(self, url):
+    def get_anime(self, url) -> SerieInterface:
         a = AnimesOnline().get_serie(url, self.parser, self.requester)
         return a
 

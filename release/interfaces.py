@@ -50,7 +50,7 @@ class ReleaseDbInterface(ABC):
         """
     
     @abstractmethod
-    def verify_if_exists(self, anime, insensitive: bool = False, limit: int = 60) -> bool: 
+    def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool: 
         """verify if an data is in the database, if it's return True if not return False
 
         Args:

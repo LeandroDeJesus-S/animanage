@@ -1,5 +1,6 @@
 from typing import List, Dict
 import re
+import logging as log
 
 from anime.interfaces import MovieInterface, SerieInterface, ProductionsDbInterface
 from requester.interfaces import RequesterInterface
@@ -152,6 +153,18 @@ class SerieDb(ProductionsDbInterface):
             self.table, where=self.fields[0], like=name,
             limit=limit, insensitive=insensitive
         )
+        log.debug(f'result: {result}')
         if not result:
             return ''
+        result_name = result[0][0].lower()
+        if result_name != name.lower():
+            print(f'Você quis dizer \033[33m"{result_name}"\033[m?')
+            log.info(f'found {result_name} not {name}')
+            return ''
+        
         return result[0][1]
+    
+    def alter_name(self, name: str, new_name: str):
+        self.db_engine.update(
+            self.table, self.fields[0], new_name, self.fields[0], name
+        )

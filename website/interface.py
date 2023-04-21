@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from anime.interfaces import SerieInterface, MovieInterface
-from release.interfaces import ReleaseScrapingInterface
+from anime.interfaces import SerieInterface, MovieInterface, ProductionsDbInterface
+from release.interfaces import ReleaseScrapingInterface, ReleaseDbInterface
+
 
 
 class SiteInterface(ABC):
@@ -33,17 +34,17 @@ class SiteInterface(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_series_db(db_engine):
+    def get_series_db(db_engine) -> ProductionsDbInterface:
         """return series database object"""
 
     @staticmethod
     @abstractmethod
-    def get_ep_releases_db(db_engine):
+    def get_ep_releases_db(db_engine) -> ReleaseDbInterface:
         """return ep release database object"""
 
     @staticmethod
     @abstractmethod
-    def get_anime_releases_db(db_engine):
+    def get_anime_releases_db(db_engine) -> ReleaseDbInterface:
         """return an anime release database object"""
 
     

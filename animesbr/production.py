@@ -1,3 +1,4 @@
+import logging as log
 from time import sleep
 from typing import List, Dict
 import re
@@ -26,6 +27,7 @@ class AnimesbrSerie(SerieInterface):
         seasons = self.parser.select_all(
             self._content, 'span.se-t.se-o', text=True, features='html.parser'
         )
+        log.debug(seasons)
         if seasons is None:
             return default
         
@@ -36,13 +38,17 @@ class AnimesbrSerie(SerieInterface):
     def get_last_ep(self):
         default = 1
         eps = self.parser.select_all(
-            self._content, 'div.episodiotitle a', 
+            self._content, 'div.numerando', 
             features='html.parser', text=True
         )
         if eps is None: 
             return default
+        eps = list(reversed(eps))
+        log.debug(eps)
         
-        last_ep = int(re.sub(r'[^\d]', ' ', eps[-1]).split()[0])
+        last_ep = int(re.sub(r'[^\d]', ' ', eps[-1]).split()[1])
+        log.debug(f'last_ep: {last_ep}')
+        
         self.last_ep = last_ep
         return last_ep
     
@@ -69,13 +75,16 @@ class AnimesbrSerie(SerieInterface):
     
     def get_sinopse(self) -> str:
         sinopse = self.parser.select_one(
-            self._content, '.wp-content p', text=True, features='html.parser'
+            self._content, 'div.wp-content p', text=True, features='html.parser'
         )
+        log.debug(sinopse)
         if sinopse is None: return ''
         
-        start = sinopse.find('.')
+        start = sinopse[:-1].find('.')
+        log.debug(f'start: {start}')
         
         final_sinopse = sinopse[start + 1:]
+        log.debug(final_sinopse)
         return final_sinopse
     
     def get_links(self) -> Dict[int, Dict[int, str]]:
@@ -145,7 +154,11 @@ class SerieDb(ProductionsDbInterface):
             self.table, where=self.fields[0], like=name,
             limit=limit, insensitive=insensitive
         )
-        print('get_link:', result)
         if not result:
             return ''
         return result[0][1]
+    
+    def alter_name(self, name: str, new_name: str):
+        self.db_engine.update(
+            self.table, self.fields[0], new_name, self.fields[0], name
+        )

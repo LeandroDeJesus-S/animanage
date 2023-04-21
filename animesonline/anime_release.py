@@ -1,4 +1,5 @@
 import re
+import logging as log
 
 from release.interfaces import ReleaseScrapingInterface, ReleaseDbInterface
 from parser.interfaces import ParserInterface
@@ -18,6 +19,7 @@ class AnimesOnline(ReleaseScrapingInterface):
         self.num_pages = len(self.pages)
         
     def get_releases(self) -> list[dict[str, str | int | float]]:
+        log.info('starting...')
         animes, rates = [], []
         for page in self.pages:
             content = self.requester.get_content(page)
@@ -45,6 +47,7 @@ class AnimesOnline(ReleaseScrapingInterface):
         for a, r in zip(animes, rates):
             final_animes.append({'anime': a, 'rate': r})
 
+        log.info(f'{len(final_animes)} founded')
         return final_animes
     
 

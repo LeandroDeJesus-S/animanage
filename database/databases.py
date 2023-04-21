@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Connection, Cursor
+import logging as log
 
 from database.interface import DatabaseInterface, T
 
@@ -14,6 +15,7 @@ class SQLite(DatabaseInterface):
         """cria conexão com a base de dados, e o atributo de instancia 
         self.cursor
         """
+        log.info("SQLite connect starting")
         if cls.connected:
             return
         
@@ -21,29 +23,54 @@ class SQLite(DatabaseInterface):
             cls.connection = sqlite3.connect(db)
             cls.cursor = cls.connection.cursor()
             cls.connected = True
+            log.debug("SQLite successfully connection")
         except Exception as error:
-            print('Erro durante conexão à DB:', error)
+            log.debug("SQLite fail connection, error {}".format(error))
             cls.disconnect()
 
     @classmethod
     def disconnect(cls):
         """fecha o cursor e encerra a conexão com a base de dados."""
+        log.info('SQLite disconnect function starting')
+        log.debug(f'Cursor {cls.cursor} | Connection {cls.connection}')
         if not cls.connected:
             return
         
         try:
+            if cls.cursor is None: return
             cls.cursor.close()
+            log.info('SQLite cursor closed')
         finally:
+            if cls.connection is None: return
             cls.connection.close()
             cls.connected = False
+            log.info('SQLite Connection closed')
+            log.info(f'SQLite Connection status: {cls.connected}')
 
     @classmethod
     def insert(cls, table: str, fields: tuple[str, ...], values: tuple[T, ...]):
+        log.info('SQLite insert function starting')
+        log.info(f'SQLite connection status: {cls.connected}')
+        log.info(f'SQLite cursor status: {cls.cursor}')
+        if cls.cursor is None or cls.connection is None:
+            log.warning('Connection or cursor was not created')
+            return
+            
+        cmd_fields = f'("{fields[0]}")' if len(fields) == 1 else fields
+        cmd_values = f'("{values[0]}")' if len(values) == 1 else values
         try:
-            cmd = f'INSERT OR IGNORE INTO {table} {fields} VALUES {values}'
+            cmd = f'INSERT OR IGNORE INTO {table} {cmd_fields} VALUES {cmd_values}'
+            log.debug(f'command: {cmd}')
             cls.cursor.execute(cmd)
             cls.connection.commit()
+            log.info(f'SQLite execute and commit called')
+                
         except Exception as error:
+            log.error(f'SQLite insert error: {error}')
+            log.error(f'SQLite insert error args: {error.args}')
+            log.error(f'SQLite insert error cause: {error.__cause__}')
+            log.error(f'SQLite insert error context: {error.__context__}')
+            log.error(f'SQLite insert error traceback: {error.__traceback__}')
             print('Error:', error)
             cls.disconnect()
 
@@ -63,8 +90,17 @@ class SQLite(DatabaseInterface):
         Returns:
             list[tuple]: resultado da consulta
         """
+        log.info('select function started')
+        log.debug(f'Connection status: {cls.connected}')
+        log.debug(f'cursor status: {cls.cursor}')
+        if not (cls.connection and cls.cursor):
+            log.warning('Connection or cursor was not created')
+            return []
+        
         if limit and not isinstance(limit, int):
+            log.error(f'limit was called and limit is not an integer')
             cls.connection.close()
+            log.debug(f'connection connection closed')
             raise ValueError('limit must be an integer')
         
         cmd = f'SELECT * FROM {table}'
@@ -74,13 +110,19 @@ class SQLite(DatabaseInterface):
         elif where and insensitive:
             cmd += F' WHERE "{where}" LIKE "%{like}%"'
             
-        cmd += f' LIMIT {limit}'
+        cmd += f' ORDER BY {where} ASC LIMIT {limit}'
+        log.debug(f'command: {cmd}')
         
         try:
             cls.cursor.execute(cmd)
-            return cls.cursor.fetchall()
+            results = cls.cursor.fetchall()
+            log.debug(f'results: {results}')
+            return results
         except Exception as error:
-            print('Error:', error)
+            log.error(f'error: {error}')
+            log.error(f'args error: {error.args}')
+            log.error(f'error traceback: {error.__traceback__}')
+            log.error(f'error cause: {error.__cause__}')
             cls.disconnect()
             return []
 
@@ -100,10 +142,14 @@ class SQLite(DatabaseInterface):
         value = {'setValue': setValue, 'whereValue': whereValue}
         
         try:
+            if not (cls.cursor and cls.connection):
+                log.warning(f'cursor or connection was not created')
+                return
+            
             cls.cursor.execute(cmd, value)
             cls.connection.commit()
         except Exception as error:
-            print('Error:', error)
+            log.error('Error: {}'.format(error))
             cls.disconnect()
 
     @classmethod
@@ -119,9 +165,15 @@ class SQLite(DatabaseInterface):
             raise TypeError('table, where and like must be strings')
         
         cmd = f'DELETE FROM {table} WHERE {where} LIKE "{like}"'
+        log.debug(f'command: {cmd}')
+        
         try:
+            if not (cls.cursor and cls.connection):
+                log.warning(f'cursor or connection was not created')
+                return
+            
             cls.cursor.execute(cmd)
             cls.connection.commit()
         except Exception as error:
-            print('Error:', error)
+            log.error('Error:'.format(error))
             cls.disconnect()

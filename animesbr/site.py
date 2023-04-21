@@ -27,7 +27,7 @@ class AnimesBr(SiteWithMovieInterface):
         return ep.anime_releases()
 
     @staticmethod
-    def get_series_db(db_engine):
+    def get_series_db(db_engine) -> SerieDb:
         db = SerieDb(db_engine)
         return db
 

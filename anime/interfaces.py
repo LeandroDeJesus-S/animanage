@@ -65,11 +65,11 @@ class SerieInterface(MovieInterface):
         """
 
     @abstractmethod
-    def get_last_season(self):
+    def get_last_season(self) -> int:
         """get and set last season value"""
 
     @abstractmethod
-    def get_last_ep(self):
+    def get_last_ep(self) -> int:
         """get and set last ep value"""
 
 
@@ -84,6 +84,9 @@ class ProductionsDbInterface(ABC):
             table (str): table name to save data
             fields (tuple[str, ...]): table field names
         """
+        self.db_engine: DatabaseInterface
+        self.table: str
+        self.fields: tuple[str, ...]
     
     @abstractmethod
     def save_production(self, data: list[dict[str, str | int | float]]):
@@ -123,3 +126,7 @@ class ProductionsDbInterface(ABC):
         Returns:
             str: link founded by name
         """
+    
+    @abstractmethod
+    def alter_name(self, name: str, new_name: str):
+        """alter the name in database"""
