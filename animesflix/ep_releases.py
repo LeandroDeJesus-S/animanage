@@ -1,38 +1,56 @@
+try:
+    import os
+    import sys
+    
+    sys.path.append(
+        os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__), '..'
+            )
+        )
+    )
+
+except:
+    pass
+
 from release.interfaces import ReleaseScrapingInterface
 from release.interfaces import ReleaseDbInterface
+from parser.interfaces import ParserInterface
+from requester.interfaces import RequesterInterface
 
-
-class Animesbr(ReleaseScrapingInterface):
-    def __init__(self, parser, requester):
+class Animesflix(ReleaseScrapingInterface):
+    def __init__(self, parser: ParserInterface, requester: RequesterInterface):
         super().__init__(parser, requester)
         self.parser = parser
         self.requester = requester
-        self.pages = [
-            'https://animesbr.cc/episodio/',
-            'https://animesbr.cc/episodio/page/2/',
-        ]
-        self.num_pages = len(self.pages)
         
-    def get_releases(self) -> list[dict[str, str | int | float]]:
-        releases = []
+        self.pages = ['https://animesflix.net/']
+        self.num_pages = len(self.pages)
+    
+    def get_releases(self) -> list[dict[str, str | int | float]]:  # type: ignore
         for page in self.pages:
             content = self.requester.get_content(page, type='text')
+            
             titles = self.parser.select_all(
-                content, '.eptitle a', text=True
+                content, 'header.entry-header h2.entry-title', text=True
             )
-
-            if titles is None:
-                return [{}]
+            eps = self.parser.select_all(
+                content, 'header.entry-header span.num-epi', text=True
+            )
             
-            releases += [{'title': i} for i in titles]
+            if titles is None or eps is None:
+                return []
             
-        return releases
+            titles = [t for t in titles if not t.startswith('\n')]
+            releases = [{'title': f'{title} {ep}'} for title, ep in zip(titles, eps)]
+            
+            return releases  # type: ignore
 
 
 class EpisodeReleaseDb(ReleaseDbInterface):
     def __init__(self, db_engine):
         self.db = db_engine
-        self.table = 'animesbr_episode_release'
+        self.table = 'animesflix_episode_release'
         self.fields = ('title',)
         
     def save_releases(self, releases: list[dict[str, str | int |float]]) -> bool:
