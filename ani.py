@@ -4,6 +4,7 @@ import logging as log
 log.basicConfig(
     filename='logs.log', level=log.DEBUG, filemode='w', format='%(levelname)s - %(name)s - %(funcName)s - %(message)s'
 )
+# TODO: Colocar nomes melhores nas classes dos sites e melhorar os logs.
 
 
 def main():

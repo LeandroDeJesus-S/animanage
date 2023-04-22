@@ -1,4 +1,5 @@
 import json
+import os.path
 from datetime import datetime
 from locale import LC_ALL, setlocale
 import logging as log
@@ -11,6 +12,10 @@ class WatchHistory:
     def register(cls, w: str, s: int, e: int):
         setlocale(LC_ALL, 'pt_BR.utf-8')
         try:
+            if not os.path.isfile(cls.HISTORY_FILE):
+                with open(cls.HISTORY_FILE, 'w+', encoding='utf-8') as f:
+                    json.dump([{'anime': w, 'se': s, 'ep': e}], f, indent=4, ensure_ascii=False)
+
             with open(cls.HISTORY_FILE, 'r+', encoding='utf-8') as f:
                 data = json.load(f)
     
@@ -54,8 +59,7 @@ class WatchHistory:
         line()
         print(f'|{c1:^15}|{c2:^15}|{c3:^15}|{c4:^25}|')
         line()
-            
-        
+
         for d in data:
             anime, se, ep, date = d.values()
             if filter is not None:
