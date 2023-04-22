@@ -5,6 +5,7 @@ from requester.factory import Requesters
 
 from animesonline.site import Animesonline
 from animesbr.site import AnimesBr
+from animesonline_online.site import AnimesonlineOnline
 
 parser = Parsers.use_bs4()
 requester = Requesters.use_requests()
@@ -13,6 +14,7 @@ requester = Requesters.use_requests()
 class Sites(Enum):
     animesonline = Animesonline(parser, requester)
     animesbr = AnimesBr(parser, requester)
+    animesonline_online = AnimesonlineOnline(parser, requester)
 
 
 def set_site(site):

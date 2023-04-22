@@ -73,8 +73,6 @@ program.add_argument('--add', nargs=3,
 
 args = program.parse_args()
 
-HELPER = args.help
-
 WATCH = args.watch
 SEASON = args.season
 EPISODE = args.episode

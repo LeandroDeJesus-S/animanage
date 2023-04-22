@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 import animesonline.ep_release, animesonline.anime_release
-import animesbr.ep_release, animesbr.anime_release
+import animesbr.ep_release
+import animesbr.anime_release
+import animesonline_online.ep_releases
+import animesonline_online.anime_release
 
 
 class ReleaseFactory:
@@ -48,4 +51,18 @@ class AnimesbrReleases(ReleaseFactory):
     
     def anime_releases(self):
         animes = animesbr.anime_release.AnimesBr(self.parser, self.requester)
+        return animes.get_releases()
+
+
+class AnimesOnlineOnlineReleases(ReleaseFactory):
+    def __init__(self, parser, requester):
+        self.parser = parser
+        self.requester = requester
+
+    def ep_releases(self) -> list[dict[str, str | int | float]]:
+        eps = animesonline_online.ep_releases.EpisodeRelease(self.parser, self.requester)
+        return eps.get_releases()
+
+    def anime_releases(self) -> list[dict[str, str | int | float]]:
+        animes = animesonline_online.anime_release.AnimeRelease(self.parser, self.requester)
         return animes.get_releases()
