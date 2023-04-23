@@ -8,7 +8,7 @@ AniManage é um Command Line Interface (CLI), onde você pode gerenciar e acessa
 2. Clone este repositório:
    - ```git clone https://github.com/LeandroDeJesus-S/animanage.git```
 
-3. Vá até o diretório e:
+3. Vá até o diretório:
    - ```cd animanage```
 
 4. Faça o download das dependências usando o seguinte comando:
