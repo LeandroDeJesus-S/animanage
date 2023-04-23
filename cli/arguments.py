@@ -74,7 +74,7 @@ program.add_argument(
     '-r', '--remove', type=str, dest='remove', help=messages.remove_msg
 )
 program.add_argument('--add-anime', nargs=2, dest='add_anime',
-                     metavar=('<name>', '<url>'))
+                     metavar=('<name>', '<url>'), help=messages.add_anime_msg)
 
 args = program.parse_args()
 

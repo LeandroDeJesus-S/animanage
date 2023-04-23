@@ -24,6 +24,8 @@ USAGE = f"""
                             -fn/--filtername <name>
                             --add <name> <se> <ep>
                             -r/--remove <name>
+                
+                --add-anime <name> <url>
 
 """
 
@@ -52,3 +54,4 @@ history_msg = 'Mostra o histórico de uso do -w e -wl.'
 fn_msg = 'Filtra pelo nome passado.'
 add_msg = 'Adiciona ou atualiza no histórico.'
 remove_msg = "remove um registro do histórico."
+add_anime_msg = 'Adiciona um anime na base de dados.'
