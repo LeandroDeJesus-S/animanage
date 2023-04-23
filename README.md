@@ -128,8 +128,14 @@ Contribuições são bem-vindas! Para fazer uma contribuição, siga as instruç
 6. Abra um Pull Request
 
 ## Licença
+Este projeto está sob a Licença [MIT](https://choosealicense.com/licenses/mit/)
 
-Este projeto está licenciado sob a Licença CC BY-NC
+AVISO: O programa foi desenvolvido e disponibilizado para uso próprio. Não me responsabilizo por uso improprio ou indevido do programa, nem tenho intensão de ferir ou prejudicar os direitos autorais dos sites utilizados. Caso proprietário de algum dos sites não estejam de acordo com o uso basta entrar em contado para que o problema seja resolvido.
+
+Sites utilizados:
+- [Animes Online](https://animesonlinecc.to/)
+- [AnimesBr](https://animesbr.cc/)
+- [Animes Online.online](https://ww31.animesonline.online/)
 
 ### Autor
 ---
