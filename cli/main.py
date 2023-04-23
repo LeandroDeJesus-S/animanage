@@ -44,6 +44,9 @@ elif arguments.HISTORY and arguments.ADD_TO_HISTORY:
         history.WatchHistory.add(name, int(se), int(ep))
     else:
         print('Argumento inválido.')
+
+elif arguments.HISTORY and arguments.REMOVE_FROM_HISTORY:
+    history.WatchHistory.remove(arguments.REMOVE_FROM_HISTORY)
         
 elif arguments.HISTORY:
     history.WatchHistory.show(filter=arguments.FILTERNAME)

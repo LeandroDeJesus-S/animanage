@@ -15,7 +15,7 @@ class SQLite(DatabaseInterface):
         """cria conexão com a base de dados, e o atributo de instancia 
         self.cursor
         """
-        log.info("SQLite connect starting")
+        log.debug("SQLite connect starting")
         if cls.connected:
             return
         
@@ -25,13 +25,13 @@ class SQLite(DatabaseInterface):
             cls.connected = True
             log.debug("SQLite successfully connection")
         except Exception as error:
-            log.debug("SQLite fail connection, error {}".format(error))
+            log.debug(error)
             cls.disconnect()
 
     @classmethod
     def disconnect(cls):
         """fecha o cursor e encerra a conexão com a base de dados."""
-        log.info('SQLite disconnect function starting')
+        log.debug('SQLite disconnect function starting')
         log.debug(f'Cursor {cls.cursor} | Connection {cls.connection}')
         if not cls.connected:
             return
@@ -39,19 +39,21 @@ class SQLite(DatabaseInterface):
         try:
             if cls.cursor is None: return
             cls.cursor.close()
-            log.info('SQLite cursor closed')
+            log.debug('SQLite cursor closed')
+        except Exception as error:
+            log.critical(error)
         finally:
             if cls.connection is None: return
             cls.connection.close()
             cls.connected = False
-            log.info('SQLite Connection closed')
-            log.info(f'SQLite Connection status: {cls.connected}')
+            log.debug('SQLite Connection closed')
+            log.debug(f'SQLite Connection status: {cls.connected}')
 
     @classmethod
     def insert(cls, table: str, fields: tuple[str, ...], values: tuple[T, ...]):
-        log.info('SQLite insert function starting')
-        log.info(f'SQLite connection status: {cls.connected}')
-        log.info(f'SQLite cursor status: {cls.cursor}')
+        log.debug('starting...')
+        log.debug(f'connection status: {cls.connected} | cursor status: {cls.cursor}')
+        
         if cls.cursor is None or cls.connection is None:
             log.warning('Connection or cursor was not created')
             return
@@ -63,15 +65,11 @@ class SQLite(DatabaseInterface):
             log.debug(f'command: {cmd}')
             cls.cursor.execute(cmd)
             cls.connection.commit()
-            log.info(f'SQLite execute and commit called')
+            log.debug(f'commits sent')
                 
         except Exception as error:
-            log.error(f'SQLite insert error: {error}')
-            log.error(f'SQLite insert error args: {error.args}')
-            log.error(f'SQLite insert error cause: {error.__cause__}')
-            log.error(f'SQLite insert error context: {error.__context__}')
-            log.error(f'SQLite insert error traceback: {error.__traceback__}')
-            print('Error:', error)
+            log.error(error)
+            print('Não foi possível realizar o registro dos dados.')
             cls.disconnect()
 
     @classmethod
@@ -90,16 +88,16 @@ class SQLite(DatabaseInterface):
         Returns:
             list[tuple]: resultado da consulta
         """
-        log.info('select function started')
-        log.debug(f'Connection status: {cls.connected}')
-        log.debug(f'cursor status: {cls.cursor}')
+        log.debug('select function started')
+        log.debug(f'Connection status: {cls.connected} | cursor status: {cls.cursor}')
+        
         if not (cls.connection and cls.cursor):
             log.warning('Connection or cursor was not created')
             return []
         
         if limit and not isinstance(limit, int):
-            log.error(f'limit was called and limit is not an integer')
-            cls.connection.close()
+            log.error(f'limit is not an integer : "{limit}"')
+            cls.disconnect()
             log.debug(f'connection connection closed')
             raise ValueError('limit must be an integer')
         
@@ -116,13 +114,11 @@ class SQLite(DatabaseInterface):
         try:
             cls.cursor.execute(cmd)
             results = cls.cursor.fetchall()
-            log.debug(f'results: {results}')
+            log.debug(f'found results: {len(results)}')
             return results
+        
         except Exception as error:
-            log.error(f'error: {error}')
-            log.error(f'args error: {error.args}')
-            log.error(f'error traceback: {error.__traceback__}')
-            log.error(f'error cause: {error.__cause__}')
+            log.error(error)
             cls.disconnect()
             return []
 
@@ -175,5 +171,5 @@ class SQLite(DatabaseInterface):
             cls.cursor.execute(cmd)
             cls.connection.commit()
         except Exception as error:
-            log.error('Error:'.format(error))
+            log.error(error)
             cls.disconnect()

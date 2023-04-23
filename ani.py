@@ -2,13 +2,13 @@ from autoupdate.autoupdate import AutoUpdate
 import logging as log
 
 log.basicConfig(
-    filename='logs.log', level=log.DEBUG, filemode='w', format='%(levelname)s - %(name)s - %(funcName)s - %(message)s'
+    filename='logs.log', level=log.DEBUG, filemode='w', format='%(levelname)s - %(module)s > %(funcName)s > line %(lineno)d - %(message)s'
 )
 # TODO: Colocar nomes melhores nas classes dos sites e melhorar os logs.
 
 
 def main():
-    from cli import main
+    from cli import main, features
 
 
 if __name__ == '__main__':

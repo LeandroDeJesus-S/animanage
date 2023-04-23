@@ -70,6 +70,9 @@ program.add_argument(
 )
 program.add_argument('--add', nargs=3,
                      metavar=('<name>', '<se>', '<ep>'), help=messages.add_msg)
+program.add_argument(
+    '-r', '--remove', type=str, dest='remove', help=messages.remove_msg
+)
 
 args = program.parse_args()
 
@@ -96,3 +99,4 @@ CHANGESITE = args.changesite
 HISTORY = args.history
 FILTERNAME = args.filtername
 ADD_TO_HISTORY = args.add
+REMOVE_FROM_HISTORY = args.remove

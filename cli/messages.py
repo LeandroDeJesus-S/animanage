@@ -23,6 +23,7 @@ USAGE = f"""
                 --history
                             -fn/--filtername <name>
                             --add <name> <se> <ep>
+                            -r/--remove <name>
 
 """
 
@@ -50,3 +51,4 @@ changesite_msg = 'Seleciona um site.'
 history_msg = 'Mostra o histórico de uso do -w e -wl.'
 fn_msg = 'Filtra pelo nome passado.'
 add_msg = 'Adiciona ou atualiza no histórico.'
+remove_msg = "remove um registro do histórico."
