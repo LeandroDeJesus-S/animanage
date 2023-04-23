@@ -1,17 +1,21 @@
 from abc import ABC, abstractmethod
 from anime.interfaces import SerieInterface, MovieInterface, ProductionsDbInterface
 from release.interfaces import ReleaseScrapingInterface, ReleaseDbInterface
-
-
+from database.interface import DatabaseInterface
+from parser.interfaces import ParserInterface
+from requester.interfaces import RequesterInterface
 
 class SiteInterface(ABC):
     @abstractmethod
-    def __init__(self, parser, requester) -> None:
+    def __init__(
+            self, parser: ParserInterface, 
+            requester: RequesterInterface, 
+            db_engine: DatabaseInterface
+        ) -> None:
+        
         self.parser = parser
         self.requester = requester
-
-        self.table: str
-        self.fields: tuple[str, ...]
+        self.db_engine = db_engine
         
     @abstractmethod
     def get_anime(self, url: str) -> SerieInterface:
@@ -32,19 +36,16 @@ class SiteInterface(ABC):
     def get_anime_releases(self) -> list[dict[str, str | int | float]]:
         """return list of anime releases in a dictionary format"""
 
-    @staticmethod
     @abstractmethod
-    def get_series_db(db_engine) -> ProductionsDbInterface:
+    def get_series_db(self) -> ProductionsDbInterface:
         """return series database object"""
 
-    @staticmethod
     @abstractmethod
-    def get_ep_releases_db(db_engine) -> ReleaseDbInterface:
+    def get_ep_releases_db(self) -> ReleaseDbInterface:
         """return ep release database object"""
 
-    @staticmethod
     @abstractmethod
-    def get_anime_releases_db(db_engine) -> ReleaseDbInterface:
+    def get_anime_releases_db(self) -> ReleaseDbInterface:
         """return an anime release database object"""
 
     

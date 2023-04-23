@@ -53,11 +53,11 @@ program.add_argument(
 
 program.add_argument(
     '--listsites', action='store_true', dest='listsites',
-    default=False, help=messages.listsites
+    default=False, help=messages.listsites_msg
 )
 program.add_argument(
-    '--setsite', dest='setsite', type=str, 
-    metavar='<site_name>', help=messages.setsite
+    '--changesite', dest='changesite', type=str, 
+    metavar='<site_name>', help=messages.changesite_msg
 )
 
 program.add_argument(
@@ -91,7 +91,7 @@ CHANGENAME = args.changename
 UPDATE = args.update
 
 LISTSITES = args.listsites
-SETSITE = args.setsite
+CHANGESITE = args.changesite
 
 HISTORY = args.history
 FILTERNAME = args.filtername

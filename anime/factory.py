@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from animesonline.production import AnimesonlineSerie
-from animesbr.production import AnimesbrSerie
-from animesonline_online.production import AnimesonlineOnlineSerie
+import animesonline.production
+import animesbr.production
+import animesonline_online.production
 
 
 class FactoryMovie(ABC):
@@ -33,22 +33,22 @@ class FactoryProduction(FactoryMovie, FactorySerie):
         pass
 
 
-class AnimesOnline(FactorySerie):
+class AnimesOnlineProduction(FactorySerie):
     @staticmethod
     def get_serie(url, parser, requester):
-        serie = AnimesonlineSerie(url, parser, requester)
+        serie = animesonline.production.AnimesonlineSerie(url, parser, requester)
         return serie
 
 
-class Animesbr(FactorySerie):
+class AnimesBrProduction(FactorySerie):
     @staticmethod
     def get_serie(url, parser, requester):
-        serie = AnimesbrSerie(url, parser, requester)
+        serie = animesbr.production.AnimesbrSerie(url, parser, requester)
         return serie
 
 
-class AnimesOnlineOnline(FactorySerie):
+class AnimesOnlineOnlineProduction(FactorySerie):
     @staticmethod
     def get_serie(url: str, parser, requester):
-        serie = AnimesonlineOnlineSerie(url, parser, requester)
+        serie = animesonline_online.production.AnimesonlineOnlineSerie(url, parser, requester)
         return serie

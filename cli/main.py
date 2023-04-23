@@ -1,6 +1,5 @@
 from cli import arguments, features
 from history import history
-from cli.messages import USAGE
 
 cli = features.CliFunctions()
 if arguments.WATCH:
@@ -36,8 +35,8 @@ elif arguments.UPDATE:
 elif arguments.LISTSITES:
     cli.list_sites()
 
-elif arguments.SETSITE:
-    cli.set_site(arguments.SETSITE)
+elif arguments.CHANGESITE:
+    cli.change_site(arguments.CHANGESITE)
 
 elif arguments.HISTORY and arguments.ADD_TO_HISTORY:
     name, se, ep = arguments.ADD_TO_HISTORY

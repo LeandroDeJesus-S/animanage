@@ -1,17 +1,14 @@
-from itertools import zip_longest, groupby
+from itertools import zip_longest
 import logging as log
 import time
 import webbrowser
 
+from anime.interfaces import ProductionsDbInterface
+from available_sites import sites
+from database.databases import SQLite
 from parser.factory import Parsers
 from requester.factory import Requesters
-from database.databases import SQLite
-from anime.interfaces import ProductionsDbInterface
 from website.interface import SiteInterface
-from available_sites import sites
-
-
-from available_sites import sites
 
 parser = Parsers.use_bs4()
 requester = Requesters.use_requests()
@@ -20,15 +17,15 @@ requester = Requesters.use_requests()
 class CliFunctions:
     def __init__(self):
         self.sites = sites.Sites
-        self.site_active = sites.site_active()
+        self.site_active = self.sites.site_active()
 
         self.db_engine = SQLite()
         self.database = 'db.sqlite'
 
         self.site: SiteInterface = self.sites[self.site_active].value
-        self.site_anime_db: ProductionsDbInterface = self.site.get_series_db(self.db_engine)
-        self.site_ep_release_db = self.site.get_ep_releases_db(self.db_engine)
-        self.site_anime_release_db = self.site.get_anime_releases_db(self.db_engine)
+        self.site_anime_db: ProductionsDbInterface = self.site.get_series_db()
+        self.site_ep_release_db = self.site.get_ep_releases_db()
+        self.site_anime_release_db = self.site.get_anime_releases_db()
                 
     def watch(self, anime, se=1, ep=1):
         # self.db_engine.select(self.site_db.table, where=self.db)
@@ -233,12 +230,12 @@ class CliFunctions:
     def list_sites(self):
         for site in self.sites:
             site_name =  site.name
-            if site_name == sites.site_active():
+            if site_name == self.site_active:
                 site_name = f'\033[32m*\033[m {site_name}'
             else:
                 site_name = '  ' + site_name
                 
             print(site_name)
 
-    def set_site(self, site: str):
-        sites.set_site(site)
+    def change_site(self, site: str):
+        self.sites.set_site(site)

@@ -18,7 +18,7 @@ USAGE = f"""
                 --changename <old_name> <new_name>
                 
                 --listsites
-                --setsite <site_name>
+                --changesite <site_name>
                 
                 --history
                             -fn/--filtername <name>
@@ -44,8 +44,8 @@ listeps_msg = 'Lista os eps do anime.'
 changename_msg = 'Muda o nome do anime na base de dados.'
 
 update_msg = 'Atualiza os animes e eps da base de dados.'
-listsites = 'Lista os sites disponíveis.'
-setsite = 'Seleciona um site.'
+listsites_msg = 'Lista os sites disponíveis.'
+changesite_msg = 'Seleciona um site.'
 
 history_msg = 'Mostra o histórico de uso do -w e -wl.'
 fn_msg = 'Filtra pelo nome passado.'
