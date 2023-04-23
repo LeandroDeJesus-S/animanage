@@ -2,6 +2,14 @@
 
 AniManage é um Command Line Interface (CLI), onde você pode gerenciar e acessar sites de animes através do terminal. Com ele você pode listar os últimos episódios e animes lançados, pegar informações de um anime especifico e redirecionar para um episódio especifico ou para o mais recente através de um único comando.
 
+<hr>
+
+<h4 align="center"> 
+  Projeto em 🚧 desenvolvimento 🛠
+</h4>
+
+---
+
 ## Instalação
 1. Antes de tudo é preciso ter o python instalado. Você pode instala-lo [aqui](https://www.python.org/downloads/).
 
