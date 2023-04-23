@@ -24,7 +24,7 @@ elif arguments.GETINFO:
     cli.get_info(arguments.GETINFO)
 
 elif arguments.LISTEPS:
-    cli.list_episodes(arguments.LISTEPS)
+    cli.list_episodes(arguments.LISTEPS)    # TODO: how can i do this without infinite ifs?
 
 elif arguments.CHANGENAME:
     cli.changename(arguments.CHANGENAME[0], arguments.CHANGENAME[1])
@@ -50,3 +50,10 @@ elif arguments.HISTORY and arguments.REMOVE_FROM_HISTORY:
         
 elif arguments.HISTORY:
     history.WatchHistory.show(filter=arguments.FILTERNAME)
+
+elif arguments.ADD_ANIME:
+    name, url = arguments.ADD_ANIME
+    if not (isinstance(name, str) and isinstance(url, str)):
+        print('Argumento inválido.')
+    else:
+        cli.add_anime(name, url)

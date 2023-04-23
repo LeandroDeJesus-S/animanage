@@ -25,15 +25,19 @@ first_page = 'https://animesonlinecc.to/anime/'
 
 req = Requesters.use_requests()
 parser = Parsers.use_bs4()
-
-site = Animesonline(parser, req)
 db = SQLite()
-site_anime_db = site.get_series_db(db)
+
+site = Animesonline(parser, req, db)
+site_anime_db = site.get_series_db()
 
 
 data = []
-for page in range(30, 81):
-    content = req.get_content(f'https://animesonlinecc.to/anime/page/{page}/')
+for page in range(1, 11):
+    link = f'https://animesonlinecc.to/anime/page/{page}/'
+    if page == 1:
+        link = 'https://animesonlinecc.to/anime/'
+        
+    content = req.get_content(link)
     titles = parser.select_all(content, 'div.data h3 a', text=True)
     links = parser.select_all(content, 'div.data h3 a', attr='href')
     data += [{'anime': a, 'link': l} for a, l in zip(titles, links)]

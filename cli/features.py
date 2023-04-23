@@ -215,7 +215,7 @@ class CliFunctions:
         log.debug(f'anime link : {link}')
         
         if not link:
-            print('\33[32mNenhum resultado encontrado.\033[m')
+            print('\33[31mNenhum resultado encontrado.\033[m')
             return
         
         anime = self.site.get_anime(link)
@@ -224,10 +224,15 @@ class CliFunctions:
         data = anime.get_links().items()
         log.debug(f'data mapping : {data.mapping}')
         
-        print('SE\tEPs')
+        line = lambda: print('+' + '~' * 17 + '+')
+        h1, h2 = 'SE', 'EPs'
+        line()
+        print(f'|{h1:^8}|{h2:^8}|')
+        line()
         for se, eps in data:
-            print(f'{se}\t{len(eps)}')
-            
+            print(f'|{se:^8}|{len(eps):^8}|')
+        line()
+        
         log.debug(f'eps listed successfully')    
         self.db_engine.disconnect()
         
@@ -244,7 +249,9 @@ class CliFunctions:
             print('\033[31mNenhum resultado encontrado.\033[m')
             return
         
-        confirm = input(f'Deseja alterar {anime[0][0]} para {to}?[s/n]: ')
+        old = f'\033[33m"{anime[0][0]}"\033[m'
+        new = f'\033[33m"{to}"\033[m'
+        confirm = input(f'Deseja alterar {old} para {new}?[s/n]: ')
         log.debug(f'user confirmation : {confirm}')
         
         if confirm.lower() == 's':
@@ -308,3 +315,20 @@ class CliFunctions:
     def change_site(self, site: str):
         self.sites.set_site(site)
         log.debug(f'site changed to : {site}')
+
+    def add_anime(self, name: str, url: str):
+        print(f'Verifique se o link esta correto: {url}')
+        c = input(f'> (s/n): ')
+        
+        if c.lower() == 'n' or c.lower() != 's':
+            print('Tente novamente!')
+            return
+        
+        name = name.strip().title()
+        url = url.strip()
+        log.debug(f'name : {name} | url : {url}')
+        
+        self.db_engine.connect(self.database)
+        self.site_anime_db.save_production([{'anime': name, 'url': url}])
+        self.db_engine.disconnect()
+        print(f'\033[32m"{name}"\033[m] adicionado com sucesso.')

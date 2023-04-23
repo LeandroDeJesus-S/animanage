@@ -16,4 +16,4 @@ if __name__ == '__main__':
         AutoUpdate.do_update()
         main()
     except Exception as exp:
-        _ = log.error(exp), log.error(exp.__traceback__)
+        _ = log.error(exp), log.error(exp)

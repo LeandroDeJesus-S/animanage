@@ -73,6 +73,8 @@ program.add_argument('--add', nargs=3,
 program.add_argument(
     '-r', '--remove', type=str, dest='remove', help=messages.remove_msg
 )
+program.add_argument('--add-anime', nargs=2, dest='add_anime',
+                     metavar=('<name>', '<url>'))
 
 args = program.parse_args()
 
@@ -100,3 +102,5 @@ HISTORY = args.history
 FILTERNAME = args.filtername
 ADD_TO_HISTORY = args.add
 REMOVE_FROM_HISTORY = args.remove
+
+ADD_ANIME = args.add_anime

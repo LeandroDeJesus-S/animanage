@@ -49,7 +49,6 @@ class AnimesOnline(ReleaseScrapingInterface):
 
         log.info(f'{len(final_animes)} founded')
         return final_animes
-    
 
 class AnimeReleaseDb(ReleaseDbInterface):
     def __init__(self, db_engine):
@@ -68,6 +67,7 @@ class AnimeReleaseDb(ReleaseDbInterface):
             return True
         
         except Exception as error:
+            log.error(error)
             return False
         
     def verify_if_exists(self, data: str, insensitive: bool = False, limit: int = 60) -> bool:
