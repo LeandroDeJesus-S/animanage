@@ -88,6 +88,10 @@ python ani.py --changename "Boku no Hero Academia" "Boku no hero"
 ```
 ![changename cmd](https://user-images.githubusercontent.com/114845576/233848811-e133ad2b-6630-4637-83c5-2c4aa65507ec.png)
 
+Para adicionar um anime você pode usar o seguinte comando:
+```python
+python ani.py --add-anime "nome do anime" "url do anime"
+```
 Ver os sites disponíveis:
 ```python
 python ani.py --listsites
