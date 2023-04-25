@@ -7,6 +7,7 @@ import webbrowser
 from anime.interfaces import ProductionsDbInterface
 from available_sites import sites
 from database.databases import SQLite
+from history.history import WatchHistory
 from parser.factory import Parsers
 from requester.factory import Requesters
 from website.interface import SiteInterface
@@ -122,13 +123,14 @@ class CliFunctions:
             print('\033[31mNenhum resultado encontrado.\033[m')
             return
         
-        anime = self.site.get_anime(anime_link)
-        log.debug(f'anime class : {anime.__class__}')
+        anime_ = self.site.get_anime(anime_link)
+        log.debug(f'anime class : {anime_.__class__}')
         
-        last_se, last_ep = anime.get_last_season(), anime.get_last_ep()
+        last_se, last_ep = anime_.get_last_season(), anime_.get_last_ep()
         log.debug(f'last se found : {last_se} last ep found : {last_ep}')
-        last_link = anime.get_links()[last_se][last_ep]
+        last_link = anime_.get_links()[last_se][last_ep]
         webbrowser.open(last_link)
+        WatchHistory.register(anime, last_se, last_ep)
         log.info(f'redirected to : {last_link}')
 
     def search(self, search):
