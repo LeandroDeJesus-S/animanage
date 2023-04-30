@@ -1,4 +1,5 @@
 from enum import Enum
+import logging as log
 from pathlib import Path
 
 from parser.factory import Parsers
@@ -24,14 +25,19 @@ class Sites(Enum):
     def set_site(site):
         try:
             sitename = Sites[site].name
+            log.debug(f'sitename = {sitename}')
+            
         except KeyError:
             print('\033[31mSite inválido.\033[m')
+            
         else:
             with open(SITEACTIVE_FILE, 'w', encoding='utf-8') as f:
                 f.write(f'{sitename}')
+                log.debug(f'site registered')
 
     @staticmethod
     def site_active():
         with open(SITEACTIVE_FILE, 'r', encoding='utf-8') as f:
             site = f.read().replace('\n', '')
+            log.debug(f'site = {site}')
             return Sites[site].name

@@ -136,7 +136,7 @@ class SQLite(DatabaseInterface):
         cmd = f'UPDATE {table} SET {setField}=:setValue WHERE {whereField}=:whereValue'
 
         value = {'setValue': setValue, 'whereValue': whereValue}
-        
+       
         try:
             if not (cls.cursor and cls.connection):
                 log.warning(f'cursor or connection was not created')
@@ -144,6 +144,7 @@ class SQLite(DatabaseInterface):
             
             cls.cursor.execute(cmd, value)
             cls.connection.commit()
+            
         except Exception as error:
             log.error('Error: {}'.format(error))
             cls.disconnect()

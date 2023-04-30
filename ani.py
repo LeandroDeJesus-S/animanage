@@ -8,7 +8,7 @@ log.basicConfig(
 
 
 def main():
-    from cli import main, features
+    from cli import main
 
 
 if __name__ == '__main__':

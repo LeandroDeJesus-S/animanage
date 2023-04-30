@@ -14,13 +14,31 @@
     {
         "anime": "black clover",
         "se": 1,
-        "ep": 151,
-        "date": "qui, 27 abr 2023 13:37:47"
+        "ep": 170,
+        "date": "sáb, 29 abr 2023 16:25:20"
     },
     {
         "anime": "kimetsu no yaiba",
         "se": 3,
         "ep": 3,
         "date": "ter, 25 abr 2023 13:22:45"
+    },
+    {
+        "anime": "akame ga kill dublado",
+        "se": 1,
+        "ep": 24,
+        "date": "sáb, 29 abr 2023 16:26:31"
+    },
+    {
+        "anime": "berserk",
+        "se": 1,
+        "ep": 1,
+        "date": "sáb, 29 abr 2023 19:41:37"
+    },
+    {
+        "anime": "evangelion",
+        "se": 1,
+        "ep": 1,
+        "date": "sáb, 29 abr 2023 20:16:54"
     }
 ]

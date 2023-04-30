@@ -156,8 +156,8 @@ class SerieDb(ProductionsDbInterface):
         log.debug(f'result: {result}')
         if not result:
             return ''
-        result_name = result[0][0].lower()
-        if result_name != name.lower():
+        result_name = result[0][0]
+        if result_name.lower() != name.lower():
             print(f'Você quis dizer \033[33m"{result_name}"\033[m?')
             log.info(f'found {result_name} not {name}')
             return ''

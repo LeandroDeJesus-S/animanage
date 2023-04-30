@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import logging as log
 from pathlib import Path
 
-from cli import features
+from cli import command
 
 
 class AutoUpdate:
@@ -22,7 +22,9 @@ class AutoUpdate:
             log.debug(f'now time : {now}')
             
             if now >= next_up_time:
-                features.CliFunctions().update()
+                releases = command.Releases()
+                up_cmd = command.UpdateReleases(releases)
+                up_cmd.execute()
                 
                 f.seek(0)
                 f.write(f'{datetime.timestamp(now)}')
