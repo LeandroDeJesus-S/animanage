@@ -1,4 +1,5 @@
 from autoupdate.autoupdate import AutoUpdate
+from colorama import init
 import logging as log
 
 log.basicConfig(
@@ -13,6 +14,7 @@ def main():
 
 if __name__ == '__main__':
     try:
+        init()
         AutoUpdate.do_update()
         main()
     except Exception as exp:
