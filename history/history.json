@@ -2,8 +2,8 @@
     {
         "anime": "vinland saga",
         "se": "2",
-        "ep": "17",
-        "date": "seg, 01 mai 2023 18:08:16"
+        "ep": "21",
+        "date": "seg, 29 mai 2023 23:28:00"
     },
     {
         "anime": "dr. stone",
@@ -19,9 +19,9 @@
     },
     {
         "anime": "kimetsu no yaiba",
-        "se": 3,
-        "ep": 4,
-        "date": "seg, 01 mai 2023 11:02:01"
+        "se": "3",
+        "ep": "8",
+        "date": "dom, 28 mai 2023 16:24:55"
     },
     {
         "anime": "akame ga kill dublado",
@@ -37,14 +37,20 @@
     },
     {
         "anime": "evangelion",
-        "se": 1,
-        "ep": 1,
-        "date": "sáb, 29 abr 2023 20:16:54"
+        "se": "1",
+        "ep": "2",
+        "date": "qua, 24 mai 2023 17:09:34"
     },
     {
         "anime": "jigokuraku",
         "se": "1",
-        "ep": "3",
-        "date": "sex, 05 mai 2023 17:06:33"
+        "ep": "8",
+        "date": "seg, 22 mai 2023 16:37:33"
+    },
+    {
+        "anime": "one piece",
+        "se": 19,
+        "ep": 297,
+        "date": "qua, 31 mai 2023 21:27:46"
     }
 ]

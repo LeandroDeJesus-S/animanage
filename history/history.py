@@ -5,6 +5,7 @@ from locale import LC_ALL, setlocale
 import logging as log
 from pathlib import Path
 
+# TODO: sometimes the history file is wrote with extra chars
 
 class WatchHistory:
     HISTORY_FILE = Path('history/history.json').absolute()
@@ -21,6 +22,7 @@ class WatchHistory:
             with open(cls.HISTORY_FILE, 'w+', encoding='utf-8') as f:
                 json.dump([{'anime': w, 'se': s, 'ep': e}], f, indent=4, ensure_ascii=False)
                 log.debug(f'"{cls.HISTORY_FILE}" was raised.')
+            return True
         
         with open(cls.HISTORY_FILE, 'r+', encoding='utf-8') as f:
             data = json.load(f)
@@ -28,7 +30,7 @@ class WatchHistory:
             
             register_date = datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
             for d in data:
-                if d['anime'] != w.lower():
+                if d['anime'].lower() != w.lower():
                     continue
                 
                 d['se'] = s
