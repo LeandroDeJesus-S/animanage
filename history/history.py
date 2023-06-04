@@ -20,7 +20,7 @@ class WatchHistory:
         log.debug(f'file exists : {file_exists}')
         if not file_exists:
             with open(cls.HISTORY_FILE, 'w+', encoding='utf-8') as f:
-                json.dump([{'anime': w, 'se': s, 'ep': e}], f, indent=4, ensure_ascii=False)
+                json.dump([{'anime': w, 'se': s, 'ep': e, 'date': datetime.now().strftime('%a, %d %b %Y %H:%M:%S')}], f, indent=4, ensure_ascii=False)
                 log.debug(f'"{cls.HISTORY_FILE}" was raised.')
             return True
         
