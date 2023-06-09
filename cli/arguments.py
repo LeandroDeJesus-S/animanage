@@ -132,7 +132,7 @@ sites = command.WebSites()
 ch_site = command.ChangeSite(CHANGESITE, sites)
 ls_sites = command.ListSites(sites)
 
-history = command.History()
+history = command.History(FILTERNAME)
 show_history_cmd = command.ShowHistory(history)
 add_to_history_cmd = command.AddToHistory(
     history, ADD_TO_HISTORY[0], ADD_TO_HISTORY[1], ADD_TO_HISTORY[2]

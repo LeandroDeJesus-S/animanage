@@ -312,7 +312,7 @@ class Releases:
         
         self.db_engine.connect(self.database)
         
-        for release in releases:
+        for release in reversed(releases):
             title = str(*release.values())
             if self.site_ep_release_db.verify_if_exists(title):
                 print(title)
@@ -328,7 +328,7 @@ class Releases:
         releases = self.site.get_anime_releases()
         
         self.db_engine.connect(self.database)
-        for anime in releases:
+        for anime in reversed(releases):
             name, rate = anime.values()
             if not self.site_anime_release_db.verify_if_exists(name):
                 name = f'\033[36m{name}\033[m'
