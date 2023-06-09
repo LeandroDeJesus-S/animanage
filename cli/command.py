@@ -478,7 +478,7 @@ class History:
     
     def add_to_history(self, name, se, ep) -> None:
         """add an anime to history"""
-        self.history.add(name, se, ep)
+        self.history.register(name, se, ep)
     
     def remove_from_history(self, name) -> None:
         """remove an anime from history"""

@@ -43,10 +43,11 @@ class AnimesbrSerie(SerieInterface):
         )
         if eps is None: 
             return default
+
         eps = list(reversed(eps))
         log.debug(eps)
         
-        last_ep = int(re.sub(r'[^\d]', ' ', eps[-1]).split()[1])
+        last_ep = int(re.sub(r'[^\d]', ' ', eps[0]).split()[0])
         log.debug(f'last_ep: {last_ep}')
         
         self.last_ep = last_ep

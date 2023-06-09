@@ -8,63 +8,82 @@ from pathlib import Path
 # TODO: sometimes the history file is wrote with extra chars
 
 class WatchHistory:
-    HISTORY_FILE = Path('history/history.json').absolute()
     MAX_CHAR_SHOW = 15
+    history_file = Path('history/history.json').absolute()
+    
+    def __init__(self, hist_file=Path('history/history.json').absolute()) -> None:
+        if hist_file is not None:
+            self.history_file = hist_file
     
     @classmethod
-    def register(cls, w: str, s: int, e: int):
+    def data(cls) -> list[dict]:
+        """get the content of the history file"""
+        with open(cls.history_file, 'r+', encoding='utf-8') as f:
+            filedata = json.load(f)
+            log.debug(f'history data found : {len(filedata)}')
+        return filedata
+    
+    @classmethod
+    def write(cls, data, file=history_file) -> bool|None:
+        """write the data in the history file, creating case it doesn't exists
+        
+        returns:
+            True if operation is done without errors else return None
+        """
+        with open(file, 'w+', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        return True
+        
+    @classmethod
+    def register(cls, anime: str, se: int, ep: int):
+        """register a new anime in the history
+
+        Args:
+            anime (str): anime name
+            se (int): season
+            ep (int): episode
+
+        Returns:
+            bool: True if the operation is succeeds
+        """
         loc = setlocale(LC_ALL, '')
         log.debug(f'locale : {loc}')
-        
-        file_exists = os.path.isfile(cls.HISTORY_FILE)
-        log.debug(f'file exists : {file_exists}')
-        if not file_exists:
-            with open(cls.HISTORY_FILE, 'w+', encoding='utf-8') as f:
-                json.dump([{'anime': w, 'se': s, 'ep': e, 'date': datetime.now().strftime('%a, %d %b %Y %H:%M:%S')}], f, indent=4, ensure_ascii=False)
-                log.debug(f'"{cls.HISTORY_FILE}" was raised.')
+        date = datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
+        data = cls.data()
+        for d in data:
+            if d['anime'].lower() != anime.lower():
+                continue
+            
+            d['se'] = se
+            d['ep'] = ep
+            d['date'] = date
+            cls.write(data)
+            log.info(f'"{anime.lower()}" updated')
             return True
         
-        with open(cls.HISTORY_FILE, 'r+', encoding='utf-8') as f:
-            data = json.load(f)
-            log.debug(f'history data found : {len(data)}')
-            
-            register_date = datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
-            for d in data:
-                if d['anime'].lower() != w.lower():
-                    continue
-                
-                d['se'] = s
-                d['ep'] = e
-                d['date'] = register_date
-                log.debug(f'updating "{w}" on {register_date}')
-                break
-            else:
-                data.append({
-                    'anime': w.lower(),
-                    'se': s,
-                    'ep': e,
-                    'date': register_date
-                })
-                log.debug(f'"{w}" registered on {register_date}')
-            
-            f.seek(0)
-            json.dump(data, f, indent=4, ensure_ascii=False)
-            log.info(f'total data recorded : {len(data)}')
+        data.append({'anime': anime.lower(), 'se': se, 'ep': ep,'date': date})
+        cls.write(data)
         return True
-                        
+                    
     @classmethod
     def show(cls, filter=None):
         log.info(f'filter by : "{filter}"')
         
-        with open(cls.HISTORY_FILE, 'r', encoding='utf-8') as f:
+        with open(cls.history_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            log.debug(f'{len(data)} data found from {cls.HISTORY_FILE}')
+            log.debug(f'{len(data)} data found from {cls.history_file}')
             
             cls.__print_history(data, filter)
         log.info(f'history showed successfully')
 
     @classmethod
     def __print_history(cls, data: list[dict], filter=None):
+        """A pretty printer in table format to show the history
+
+        Args:
+            data (list[dict]): history data
+            filter (str, optional): filter by an anime name. Defaults to None.
+        """
         log.debug(f'{len(data)} data received')
         log.debug(f'filter by : "{filter}"')
         
@@ -89,28 +108,26 @@ class WatchHistory:
         line()
         log.debug(f'printed successfully')
 
-    @classmethod
-    def add(cls, name, se, ep):
-        log.debug(f'adding : {name} se {se} ep {ep}')
-        add = cls.register(name, se, ep)
+    # @classmethod
+    # def add(cls, name, se, ep):
+    #     log.debug(f'adding : {name} se: {se} ep: {ep}')
+    #     add = cls.register(name, se, ep)
         
-        if add:
-            log.info(f'"{name}" registered')
-            return print(f'"{name}" adicionado ao histórico.')
+    #     if add:
+    #         log.info(f'"{name}" registered')
+    #         return print(f'"{name}" adicionado ao histórico.')
 
-        print(f'Falha ao adicionar "{name}" ao histórico!')
-        log.warning(f'cannot add "{name}" to history.')
+    #     print(f'Falha ao adicionar "{name}" ao histórico!')
+    #     log.warning(f'cannot add "{name}" to history.')
 
     @classmethod
     def remove(cls, name):
-        if not os.path.isfile(cls.HISTORY_FILE):
+        if not os.path.isfile(cls.history_file):
             log.warning('history file not found')
             return
         
-        with open(cls.HISTORY_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            log.debug(f'{len(data)} found.')
-        
+        data = cls.data()
+        log.debug(f'{len(data)} found.')        
         
         for i, d in enumerate(data):
             anime = d['anime']
@@ -125,7 +142,7 @@ class WatchHistory:
             if confirm.lower() == 's':
                 p = data.pop(i)
                 log.debug(f'popped : {p}')
-                with open(cls.HISTORY_FILE, 'w', encoding='utf-8') as f:
+                with open(cls.history_file, 'w', encoding='utf-8') as f:
                     json.dump(data, f, indent=4, ensure_ascii=False)
                 
                 msg = f'\033[32mRemovido com sucesso.\033[m'
