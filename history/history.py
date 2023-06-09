@@ -24,7 +24,7 @@ class WatchHistory:
         return filedata
     
     @classmethod
-    def write(cls, data, file=history_file) -> bool|None:
+    def write(cls, data: list[dict], file=history_file) -> bool|None:
         """write the data in the history file, creating case it doesn't exists
         
         returns:
@@ -66,7 +66,7 @@ class WatchHistory:
         return True
                     
     @classmethod
-    def show(cls, filter=None):
+    def show(cls, filter: str|None=None):
         log.info(f'filter by : "{filter}"')
         
         with open(cls.history_file, 'r', encoding='utf-8') as f:
@@ -108,54 +108,58 @@ class WatchHistory:
         line()
         log.debug(f'printed successfully')
 
-    # @classmethod
-    # def add(cls, name, se, ep):
-    #     log.debug(f'adding : {name} se: {se} ep: {ep}')
-    #     add = cls.register(name, se, ep)
-        
-    #     if add:
-    #         log.info(f'"{name}" registered')
-    #         return print(f'"{name}" adicionado ao histórico.')
-
-    #     print(f'Falha ao adicionar "{name}" ao histórico!')
-    #     log.warning(f'cannot add "{name}" to history.')
-
     @classmethod
-    def remove(cls, name):
+    def remove(cls, name: str) -> bool:
+        """remove an anime from the history
+
+        Args:
+            name (str): anime name
+
+        Returns:
+            bool: True if removed successfully
+        """
         if not os.path.isfile(cls.history_file):
             log.warning('history file not found')
             return
         
         data = cls.data()
-        log.debug(f'{len(data)} found.')        
+        log.debug(f'{len(data)} found.')
         
-        for i, d in enumerate(data):
-            anime = d['anime']
-            log.debug(f'anime: "{anime[:cls.MAX_CHAR_SHOW]}" | name: "{name[:cls.MAX_CHAR_SHOW]}"')
-            if anime[:cls.MAX_CHAR_SHOW] != name[:cls.MAX_CHAR_SHOW].lower():
-                continue
+        for index, dt in enumerate(data):
+            anime = dt['anime'][:cls.MAX_CHAR_SHOW].lower()
+            anm_to_rm = name[:cls.MAX_CHAR_SHOW].lower()
             
-            log.debug(f'"{name}" found in history')
-            confirm = input(f'\033[33mRemover "{d["anime"]}" do histórico? (s/n):\033[m ')
-            log.debug(f'Confirmation answer : "{confirm}"')
-            
-            if confirm.lower() == 's':
-                p = data.pop(i)
-                log.debug(f'popped : {p}')
-                with open(cls.history_file, 'w', encoding='utf-8') as f:
-                    json.dump(data, f, indent=4, ensure_ascii=False)
+            if anime == anm_to_rm and cls.remove_confirmation(dt['anime']):
+                data.pop(index)
                 
                 msg = f'\033[32mRemovido com sucesso.\033[m'
                 log.info(msg)
                 
                 print(f'\033[33m{msg}\033[m')
-                
-            elif confirm.lower() != 'n':
-                print('Opção inválida.')
-            break
+                return True
         
-        else:
-            msg = f'"{name}" não foi encontrado.'
-            print(msg)
-            log.debug(msg)
-                
+        msg = f'\033[33m"{name}"\033[m não foi encontrado.'
+        print(msg)
+        log.debug(msg)
+        return False
+        
+    @staticmethod
+    def remove_confirmation(anm: str) -> bool:
+        """get the confirmation to remove
+
+        Args:
+            anm (str): anime name to remove
+
+        Returns:
+            bool: True if removed successfully else False
+        """
+        confirm = input(
+            f'\033[33mRemover "{anm}" do histórico? (s/n):\033[m '
+        ).lower()
+        resp = {'s': True, 'n': False}
+        try:
+            return resp[confirm]
+        except KeyError:
+            print('\033[31mOpção inválida!\033[m')
+            log.warning('invalid option')
+            return False
