@@ -128,21 +128,10 @@ python ani.py --history -r "naruto"
 ![history r remove cmd](https://user-images.githubusercontent.com/114845576/233851105-eb71a942-4620-4654-b811-ac1444bbec0d.png)
 
 
-## Contribuindo
-
-Contribuições são bem-vindas! Para fazer uma contribuição, siga as instruções abaixo:
-
-1. Fork este repositório
-2. Crie uma nova branch com o nome da sua feature (`git checkout -b minha_feature`)
-3. Faça as alterações necessárias
-4. Commit suas alterações (`git commit -m 'Adiciona minha_feature'`)
-5. Push para a branch (`git push origin minha_feature`)
-6. Abra um Pull Request
-
 ## Licença
 Este projeto está sob a Licença [MIT](https://choosealicense.com/licenses/mit/)
 
-AVISO: O programa foi desenvolvido e disponibilizado para uso próprio. Não me responsabilizo por uso improprio ou indevido do programa, nem tenho intensão de ferir ou prejudicar os direitos autorais dos sites utilizados. Caso proprietário de algum dos sites não estejam de acordo com o uso basta entrar em contado para que o problema seja resolvido.
+AVISO: O programa foi desenvolvido para fins de pratica e disponibilizado para uso próprio. Não me responsabilizo por uso improprio ou indevido do programa, nem tenho intensão de ferir ou prejudicar os direitos autorais dos sites utilizados. Caso proprietário de algum dos sites não estejam de acordo com o uso basta entrar em contado para que o problema seja resolvido.
 
 Sites utilizados:
 - [Animes Online](https://animesonlinecc.to/)
