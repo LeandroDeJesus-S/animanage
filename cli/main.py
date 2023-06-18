@@ -22,8 +22,8 @@ elif arguments.GETINFO:
 elif arguments.LISTEPS:
     arguments.invoker.execute_command('--listeps')
 
-elif arguments.CHANGENAME and arguments.CHANGENAME[0] is not None:
-    arguments.invoker.execute_command('--changename')
+elif arguments.SETALIAS and arguments.SETALIAS[0] is not None:
+    arguments.invoker.execute_command('--alias')
 
 elif arguments.UPDATE:
     arguments.invoker.execute_command('--update')

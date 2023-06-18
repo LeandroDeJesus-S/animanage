@@ -42,7 +42,7 @@ program.add_argument('--listeps', type=str, dest='listeps',
                      metavar='<name>', help=messages.listeps_msg)
 
 program.add_argument(
-    '--changename', type=str, nargs=2, dest='changename',
+    '--alias', type=str, nargs=2, dest='set_alias',
     metavar=('<old_name>', '<new_name>'),
     help=messages.changename_msg, default=[None, None]
 )
@@ -97,7 +97,7 @@ SEARCH = args.search
 GETINFO = args.getinfo
 LISTEPS = args.listeps
 
-CHANGENAME = args.changename
+SETALIAS = args.set_alias
 
 UPDATE = args.update
 
@@ -118,7 +118,7 @@ watch_latest_cmd = command.WatchLatestEp(anime, WATCHLATEST)
 search_cmd = command.SearchAnime(anime, SEARCH)
 get_info_cmd = command.GetInfo(anime, GETINFO)
 list_episodes_cmd = command.ListEpisodes(anime, LISTEPS)
-change_name_cmd = command.ChangeName(anime, CHANGENAME[0], CHANGENAME[1])
+set_alias_cmd = command.SetAlias(anime, SETALIAS[0], SETALIAS[1])
 add_anime_cmd = command.AddAnime(anime, ADD_ANIME[0], ADD_ANIME[1])
 
 releases = command.Releases()
@@ -146,7 +146,7 @@ invoker.add_command('-wl', watch_latest_cmd)
 invoker.add_command('--search', search_cmd)
 invoker.add_command('--getinfo', get_info_cmd)
 invoker.add_command('--listeps', list_episodes_cmd)
-invoker.add_command('--changename', change_name_cmd)
+invoker.add_command('--alias', set_alias_cmd)
 invoker.add_command('--add-anime', add_anime_cmd)
 
 invoker.add_command('-le', list_episode_releases_cmd)

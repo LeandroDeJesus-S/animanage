@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from itertools import zip_longest
+import json
 from pathlib import Path
 import time
 from typing import Any
@@ -22,6 +23,11 @@ class Anime:
         
         self.database = str(Path('db.sqlite').absolute())
         self.db = SQLite()
+    
+    # @staticmethod
+    # def __is_alias(alias):
+    #     with open()
+    #     json.load()
         
     def watch(self, name: str, se=1, ep=1) -> None:
         """redirect to the episode of the anime.
@@ -31,6 +37,7 @@ class Anime:
             se (int, optional): season number. Defaults to 1.
             ep (int, optional): episode number. Defaults to 1.
         """
+        alias = self.series_db.get_alias(name)
         self.db.connect(self.database)
         link = self.series_db.get_link(name, insensitive=True)
         self.db.disconnect()
@@ -172,12 +179,12 @@ class Anime:
             print(f'|{se:^8}|{len(eps):^8}|')
         line()
 
-    def change_name(self, name: str, to: str):
-        """change the name of the anime in database.
+    def set_alias(self, alias: str, name: str):
+        """set an alias to the anime from database.
 
         Args:
             name (str): anime name in database
-            to (str): new name to the anime
+            alias (str): alias to the anime
         """
         self.db.connect(self.database)
         anime = self.db.select(self.series_db.table,
@@ -185,16 +192,18 @@ class Anime:
                               like=name)
         
         if not anime:
-            print('\033[31mNenhum resultado encontrado.\033[m')
+            print(f'\033[31mNenhum resultado para "{name}" encontrado.\033[m')
+            return
+        
+        operation_return = self.series_db.set_alias(alias, name)
+        if not operation_return:
+            print(f'\033[31mFalha na operação.\033[m')
             return
         
         old = f'\033[33m"{anime[0][0]}"\033[m'
-        new = f'\033[33m"{to}"\033[m'
-        confirm = input(f'Deseja alterar {old} para {new}?[s/n]: ')
+        als = f'\033[33m"{alias}"\033[m'
         
-        if confirm.lower() == 's':
-            self.series_db.alter_name(name, to.title())
-            print('\033[32mAlterado com sucesso!\033[m')
+        print(f'{als} atribuído com sucesso a {old}')
         
         self.db.disconnect()
 
@@ -274,14 +283,14 @@ class ListEpisodes(ICommand):
         self.anime.list_episodes(self.name)
 
 
-class ChangeName(ICommand):
-    def __init__(self, anime: Anime, name: str, to: str) -> None:
+class SetAlias(ICommand):
+    def __init__(self, anime: Anime, name: str, alias: str) -> None:
         self.anime = anime
         self.name = name
-        self.to = to
+        self.alias = alias
     
     def execute(self) -> None:
-        self.anime.change_name(self.name, self.to)
+        self.anime.set_alias(self.alias, self.name)
 
 
 class AddAnime(ICommand):
