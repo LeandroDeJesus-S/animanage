@@ -15,7 +15,7 @@ USAGE = f"""
                 --search <name>
                 --getinfo <name>
                 --listeps <name>
-                --changename <old_name> <new_name>
+                --alias <current_name> <alias>
                 
                 --listsites
                 --changesite <site_name>
@@ -44,7 +44,7 @@ la_msg = 'Lista os animes em lançamento.'
 search_msg = 'Busca por um anime na base de dados.'
 getinfo_msg = 'Mostra algumas informações do anime.'
 listeps_msg = 'Lista os eps do anime.'
-changename_msg = 'Muda o nome do anime na base de dados.'
+alias_msg = 'Da um "apelido" para um anime.'
 
 update_msg = 'Atualiza os animes e eps da base de dados.'
 listsites_msg = 'Lista os sites disponíveis.'

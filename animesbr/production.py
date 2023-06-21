@@ -176,13 +176,15 @@ class SerieDb(ProductionsDbInterface):
             bool: True if there weren't errors
         """
         try:
-            with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
-                data = json.load(file) if file.read() else {}
-                data[alias] = to
-                
-            with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
-                json.dump(data, file, ensure_ascii=False, indent=4)
+            data = self._get_aliases()
+            data.update({alias: to})
+            
+            self._write_alias(data)
             return True
+        
+        except FileNotFoundError:
+            self._write_alias({})
+            return False
         
         except Exception as error:
             log.error(error)
@@ -198,10 +200,22 @@ class SerieDb(ProductionsDbInterface):
             str: the anime name in database owned of the alias
             if not found return the alias argument with no changes
         """
-        with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
-            data = json.load(file) if file.read() else {}
-        
-        als = data.get(alias)
-        return als if als is not None else alias
-
+        if not self.ALIAS_FILE.exists():
+            self._write_alias({})
             
+        with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        key = [k for k in data if k.lower() == alias.lower()]
+        return data.get(key[0]) if key else alias
+    
+    def _get_aliases(self) -> dict[str, str]:
+        """get all data of the alias file"""
+        with open(self.ALIAS_FILE, encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+        
+    def _write_alias(self, data: dict[str, str]) -> None:
+        """register the alias data after update"""
+        with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)

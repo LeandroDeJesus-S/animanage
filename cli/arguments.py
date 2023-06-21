@@ -44,7 +44,7 @@ program.add_argument('--listeps', type=str, dest='listeps',
 program.add_argument(
     '--alias', type=str, nargs=2, dest='set_alias',
     metavar=('<old_name>', '<new_name>'),
-    help=messages.changename_msg, default=[None, None]
+    help=messages.alias_msg, default=[None, None]
 )
 
 program.add_argument(

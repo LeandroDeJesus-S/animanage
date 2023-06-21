@@ -130,7 +130,15 @@ class SerieDb(ProductionsDbInterface):
         
         self.ALIAS_FILE = Path('animesonline/aliases.json').absolute()
         
-    def save_production(self, data: list[dict[str, str | int | float]]):
+    def save_production(self, data: list[dict[str, str | int | float]]) -> bool:
+        """save the productions data in database
+
+        Args:
+            data to save in database
+
+        Obs:
+            The data values should have the same order as the database fields.
+        """
         try:
             for d in data:
                 self.db_engine.insert(
@@ -144,6 +152,16 @@ class SerieDb(ProductionsDbInterface):
             return False
     
     def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
+        """verify if a data is in the database, if it's return True if not return False
+
+        Args:
+            data (str): data to verify
+            insensitive (bool, optional): if True make query with insensitive case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            bool: True if exists, False if not
+        """
         result = self.db_engine.select(
             self.table, where=self.fields[0], like=data, 
             insensitive=insensitive, limit=limit
@@ -153,6 +171,16 @@ class SerieDb(ProductionsDbInterface):
         return True
 
     def get_link(self, name: str, insensitive: bool = False, limit: int = 60) -> str:
+        """get data from database
+
+        Args:
+            name: production name to get the link
+            insensitive (bool, optional): if True make query with insensitive case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            str: link founded by name
+        """
         anime = self.get_alias(name)
         result = self.db_engine.select(
             self.table, where=self.fields[0], like=anime,
@@ -183,10 +211,12 @@ class SerieDb(ProductionsDbInterface):
             data = self._get_aliases()
             data.update({alias: to})
             
-            with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
-                json.dump(data, file, ensure_ascii=False, indent=4)
-                
+            self._write_alias(data)
             return True
+        
+        except FileNotFoundError:
+            self._write_alias({})
+            return False
         
         except Exception as error:
             log.error(error)
@@ -202,14 +232,22 @@ class SerieDb(ProductionsDbInterface):
             str: the anime name in database owned of the alias
             if not found return the alias argument with no changes
         """
+        if not self.ALIAS_FILE.exists():
+            self._write_alias({})
+            
         with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
-            data = json.load(file) if file.read(1) else {}
+            data = json.load(file)
         
-        als = data.get(alias)
-        return als if als is not None else alias
+        key = [k for k in data if k.lower() == alias.lower()]
+        return data.get(key[0]) if key else alias
     
-    def _get_aliases(self):
-        with open(self.ALIAS_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f) if f.read(1) else {}
-        
+    def _get_aliases(self) -> dict[str, str]:
+        """get all data of the alias file"""
+        with open(self.ALIAS_FILE, encoding='utf-8') as f:
+            data = json.load(f)
         return data
+        
+    def _write_alias(self, data: dict[str, str]) -> None:
+        """register the alias data after update"""
+        with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
