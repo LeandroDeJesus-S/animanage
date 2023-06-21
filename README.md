@@ -81,10 +81,10 @@ python ani.py --listeps "Boku no Hero Academia"
 ```
 ![listeps cmd](https://user-images.githubusercontent.com/114845576/233848257-393b496d-7f8f-4aea-a820-08621f239c8e.png)
 
-Mudar o nome de um anime:
+Configurar um "apelido" para um anime:
 ```
-# De "Boku no Hero Academia" para "Boku no hero"
-python ani.py --changename "Boku no Hero Academia" "Boku no hero"
+# apelidando "Boku no Hero Academia" como apenas "Boku no hero"
+python ani.py --alias "Boku no Hero Academia" "Boku no hero"
 ```
 ![changename cmd](https://user-images.githubusercontent.com/114845576/233848811-e133ad2b-6630-4637-83c5-2c4aa65507ec.png)
 

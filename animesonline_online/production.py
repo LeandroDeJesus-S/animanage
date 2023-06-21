@@ -11,6 +11,9 @@ except: pass
 from time import sleep
 from typing import List, Dict
 import re
+from pathlib import Path
+import logging as log
+import json
 
 from anime.interfaces import SerieInterface
 from requester.interfaces import RequesterInterface
@@ -100,8 +103,18 @@ class SerieDb(ProductionsDbInterface):
 
         self.table = 'animesonline_online_anime'
         self.fields = ('anime', 'link')
+        
+        self.ALIAS_FILE = Path('animesonline_online/aliases.json').absolute()
 
-    def save_production(self, data: list[dict[str, str | int | float]]):
+    def save_production(self, data: list[dict[str, str | int | float]]) -> None:
+        """save the productions data in database
+
+        Args:
+            data to save in database
+
+        Obs:
+            The data values should have the same order as the database fields.
+        """
         for d in data:
             self.db_engine.insert(
                 table=self.table,
@@ -128,7 +141,57 @@ class SerieDb(ProductionsDbInterface):
             return ''
         return result[0][1]
 
-    def alter_name(self, name: str, new_name: str):
-        self.db_engine.update(
-            self.table, self.fields[0], new_name, self.fields[0], name
-        )
+    def set_alias(self, alias: str, to: str) -> bool:
+        """set an alias to an anime from database
+
+        Args:
+            alias (str): the alias to the anime
+            to (str): anime which receives the alias
+
+        Returns:
+            bool: True if there weren't errors
+        """
+        try:
+            data = self._get_aliases()
+            data.update({alias: to})
+            
+            self._write_alias(data)
+            return True
+        
+        except FileNotFoundError:
+            self._write_alias({})
+            return False
+        
+        except Exception as error:
+            log.error(error)
+            return False
+
+    def get_alias(self, alias: str) -> str:
+        """get an anime by alias
+
+        Args:
+            alias (str): alias of the anime
+
+        Returns:
+            str: the anime name in database owned of the alias
+            if not found return the alias argument with no changes
+        """
+        if not self.ALIAS_FILE.exists():
+            self._write_alias({})
+            
+        with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        key = [k for k in data if k.lower() == alias.lower()]
+        return data.get(key[0]) if key else alias
+    
+    def _get_aliases(self) -> dict[str, str]:
+        """get all data of the alias file"""
+        with open(self.ALIAS_FILE, encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+        
+    def _write_alias(self, data: dict[str, str]) -> None:
+        """register the alias data after update"""
+        with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)

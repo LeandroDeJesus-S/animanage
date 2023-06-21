@@ -1,6 +1,8 @@
 from typing import List, Dict
 import re
 import logging as log
+from pathlib import Path
+import json
 
 from anime.interfaces import MovieInterface, SerieInterface, ProductionsDbInterface
 from requester.interfaces import RequesterInterface
@@ -126,7 +128,17 @@ class SerieDb(ProductionsDbInterface):
         self.table = 'animesonline_anime'
         self.fields = ('anime', 'link')
         
-    def save_production(self, data: list[dict[str, str | int | float]]):
+        self.ALIAS_FILE = Path('animesonline/aliases.json').absolute()
+        
+    def save_production(self, data: list[dict[str, str | int | float]]) -> bool:
+        """save the productions data in database
+
+        Args:
+            data to save in database
+
+        Obs:
+            The data values should have the same order as the database fields.
+        """
         try:
             for d in data:
                 self.db_engine.insert(
@@ -140,6 +152,16 @@ class SerieDb(ProductionsDbInterface):
             return False
     
     def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
+        """verify if a data is in the database, if it's return True if not return False
+
+        Args:
+            data (str): data to verify
+            insensitive (bool, optional): if True make query with insensitive case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            bool: True if exists, False if not
+        """
         result = self.db_engine.select(
             self.table, where=self.fields[0], like=data, 
             insensitive=insensitive, limit=limit
@@ -149,22 +171,83 @@ class SerieDb(ProductionsDbInterface):
         return True
 
     def get_link(self, name: str, insensitive: bool = False, limit: int = 60) -> str:
+        """get data from database
+
+        Args:
+            name: production name to get the link
+            insensitive (bool, optional): if True make query with insensitive case compares. Defaults to False.
+            limit (int, optional): limit of data to verify. Defaults to 60.
+
+        Returns:
+            str: link founded by name
+        """
+        anime = self.get_alias(name)
         result = self.db_engine.select(
-            self.table, where=self.fields[0], like=name,
+            self.table, where=self.fields[0], like=anime,
             limit=limit, insensitive=insensitive
         )
         log.debug(f'result: {result}')
         if not result:
             return ''
         result_name = result[0][0]
-        if result_name.lower() != name.lower():
+        if result_name.lower() != anime.lower():
             print(f'Você quis dizer \033[33m"{result_name}"\033[m?')
-            log.info(f'found {result_name} not {name}')
+            log.info(f'found {result_name} not {anime}')
             return ''
         
         return result[0][1]
     
-    def alter_name(self, name: str, new_name: str):
-        self.db_engine.update(
-            self.table, self.fields[0], new_name, self.fields[0], name
-        )
+    def set_alias(self, alias: str, to: str) -> bool:
+        """set an alias to an anime from database
+
+        Args:
+            alias (str): the alias to the anime
+            to (str): anime which receives the alias
+
+        Returns:
+            bool: True if there weren't errors
+        """
+        try:
+            data = self._get_aliases()
+            data.update({alias: to})
+            
+            self._write_alias(data)
+            return True
+        
+        except FileNotFoundError:
+            self._write_alias({})
+            return False
+        
+        except Exception as error:
+            log.error(error)
+            return False
+
+    def get_alias(self, alias: str) -> str:
+        """get an anime by alias
+
+        Args:
+            alias (str): alias of the anime
+
+        Returns:
+            str: the anime name in database owned of the alias
+            if not found return the alias argument with no changes
+        """
+        if not self.ALIAS_FILE.exists():
+            self._write_alias({})
+            
+        with open(self.ALIAS_FILE, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        key = [k for k in data if k.lower() == alias.lower()]
+        return data.get(key[0]) if key else alias
+    
+    def _get_aliases(self) -> dict[str, str]:
+        """get all data of the alias file"""
+        with open(self.ALIAS_FILE, encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+        
+    def _write_alias(self, data: dict[str, str]) -> None:
+        """register the alias data after update"""
+        with open(self.ALIAS_FILE, 'w+', encoding='utf-8') as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)

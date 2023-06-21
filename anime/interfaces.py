@@ -128,5 +128,25 @@ class ProductionsDbInterface(ABC):
         """
     
     @abstractmethod
-    def alter_name(self, name: str, new_name: str):
-        """alter the name in database"""
+    def set_alias(self, alias: str, to: str) -> bool:
+        """set an alias to an anime from database
+
+        Args:
+            alias (str): the alias to the anime
+            to (str): anime which receives the alias
+
+        Returns:
+            bool: True if there weren't errors
+        """
+
+    @abstractmethod
+    def get_alias(self, alias: str) -> str:
+        """get an anime by alias
+
+        Args:
+            alias (str): alias of the anime
+
+        Returns:
+            str: the anime name in database owned of the alias
+            if not found return the alias argument with no changes
+        """
