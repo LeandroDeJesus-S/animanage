@@ -25,12 +25,12 @@ program.add_argument(
 )
 
 program.add_argument(
-    '-le', action='store_true', dest='list_ep_releases', 
+    '-le', '--listep-release', action='store_true', dest='list_ep_releases', 
     default=False, help=messages.le_msg
 )
 
 program.add_argument(
-    '-la', action='store_true', dest='list_anime_releases',
+    '-la', '--listanime-release', action='store_true', dest='list_anime_releases',
     default=False, help=messages.la_msg
 )
 
@@ -48,8 +48,12 @@ program.add_argument(
 )
 
 program.add_argument(
-    '--update', action='store_true', dest='update',
+    '--update', '-up', action='store_true', dest='update',
     default=False, help=messages.update_msg
+)
+program.add_argument(
+    '--all', '-a', action='store_true', dest='up_all',
+    default=False, help=messages.update_all_msg
 )
 
 program.add_argument(
@@ -62,7 +66,7 @@ program.add_argument(
 )
 
 program.add_argument(
-    '--history', action='store_true', dest='history',
+    '--history', '-H', action='store_true', dest='history',
     default=False, help=messages.history_msg
 )
 program.add_argument(
@@ -100,6 +104,7 @@ LISTEPS = args.listeps
 SETALIAS = args.set_alias
 
 UPDATE = args.update
+UPDATE_ALL = args.up_all
 
 LISTSITES = args.listsites
 CHANGESITE = args.changesite
@@ -125,7 +130,9 @@ releases = command.Releases()
 
 list_episode_releases_cmd = command.ListEpisodeReleases(releases)
 list_anime_releases_cmd = command.ListAnimeReleases(releases)
+
 update_releases_cmd = command.UpdateReleases(releases)
+update_all_sites_releases_cmd = command.UpdateAllSitesReleases(releases)
 
 sites = command.WebSites()
 
@@ -151,7 +158,9 @@ invoker.add_command('--add-anime', add_anime_cmd)
 
 invoker.add_command('-le', list_episode_releases_cmd)
 invoker.add_command('-la', list_anime_releases_cmd)
+
 invoker.add_command('--update', update_releases_cmd)
+invoker.add_command('--update --all', update_all_sites_releases_cmd)
 
 invoker.add_command('--listsites', ls_sites)
 invoker.add_command('--changesite', ch_site)

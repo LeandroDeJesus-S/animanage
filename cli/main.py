@@ -25,6 +25,9 @@ elif arguments.LISTEPS:
 elif arguments.SETALIAS and arguments.SETALIAS[0] is not None:
     arguments.invoker.execute_command('--alias')
 
+elif arguments.UPDATE and arguments.UPDATE_ALL:
+    arguments.invoker.execute_command('--update --all')
+
 elif arguments.UPDATE:
     arguments.invoker.execute_command('--update')
 
