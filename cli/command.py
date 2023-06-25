@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from itertools import zip_longest
-import json
+import os
 from pathlib import Path
 import time
 from typing import Any
@@ -403,6 +403,12 @@ class Releases:
         tot_time = time.time() - start_time
         print('\033[32mTudo pronto! :)\033[m')
         print(f'\033[37m{tot_updates} updates in {tot_time:.2f} seconds\033[m')
+    
+    def update_all_sites(self):
+        sites = Sites
+        for site in sites:
+            print(f'Atualizando: \033[34m{site.name}\033[m')
+            os.system(f'py ani.py --changesite {site.name}; --update')
         
 
 class ListEpisodeReleases(ICommand):
@@ -427,6 +433,14 @@ class UpdateReleases(ICommand):
         
     def execute(self) -> None:
         self.releases.update()
+
+
+class UpdateAllSitesReleases(ICommand):
+    def __init__(self, releases: Releases) -> None:
+        self.releases = releases
+        
+    def execute(self) -> None:
+        self.releases.update_all_sites()
 
 
 class WebSites:

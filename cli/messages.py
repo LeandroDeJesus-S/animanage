@@ -20,7 +20,7 @@ USAGE = f"""
                 --listsites
                 --changesite <site_name>
                 
-                --history
+                --history/-H
                             -fn/--filtername <name>
                             --add <name> <se> <ep>
                             -r/--remove <name>
@@ -46,7 +46,8 @@ getinfo_msg = 'Mostra algumas informações do anime.'
 listeps_msg = 'Lista os eps do anime.'
 alias_msg = 'Da um "apelido" para um anime.'
 
-update_msg = 'Atualiza os animes e eps da base de dados.'
+update_msg = 'Atualiza os animes e eps da base de dados para o site atual.'
+update_all_msg = 'Atualiza os animes e eps da base de dados para todos os sites.'
 listsites_msg = 'Lista os sites disponíveis.'
 changesite_msg = 'Seleciona um site.'
 
