@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from itertools import zip_longest
 import os
+import sys
 from pathlib import Path
 import time
 from typing import Any
@@ -406,9 +407,11 @@ class Releases:
     
     def update_all_sites(self):
         sites = Sites
+        system = sys.platform
+        python_cmd = 'python' if 'win' in system.lower() else 'python3'
         for site in sites:
             print(f'Atualizando: \033[34m{site.name}\033[m')
-            os.system(f'py ani.py --changesite {site.name}; --update')
+            os.system(f'{python_cmd} ani.py --changesite {site.name}; --update')
         
 
 class ListEpisodeReleases(ICommand):
