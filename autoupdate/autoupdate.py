@@ -9,6 +9,14 @@ class AutoUpdate:
     TIMEFILE = Path('autoupdate/.time').absolute()
     INTERVAL_DAYS = 3
     
+    def __init__(self) -> None:
+        self.verify_file_exists()
+    
+    @classmethod
+    def verify_file_exists(cls):
+        if not cls.TIMEFILE.exists():
+            cls.TIMEFILE.touch()
+    
     @classmethod
     def update(cls):
         with open(cls.TIMEFILE, 'r+') as f:

@@ -15,6 +15,9 @@ requester = Requesters.use_requests()
 db_engine = databases.SQLite()
 
 SITEACTIVE_FILE = Path('available_sites/.site-active').absolute()
+if not SITEACTIVE_FILE.exists():
+    SITEACTIVE_FILE.touch()
+
 
 class Sites(Enum):
     animesonline = Animesonline(parser, requester, db_engine)

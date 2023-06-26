@@ -9,11 +9,16 @@ from pathlib import Path
 
 class WatchHistory:
     MAX_CHAR_SHOW = 15
-    history_file = Path('history/history.json').absolute()
+    history_file = Path('history').absolute() / 'history.json'
     
-    def __init__(self, hist_file=Path('history/history.json').absolute()) -> None:
-        if hist_file is not None:
-            self.history_file = hist_file
+    def __init__(self) -> None:
+        self.verify_file_exists()
+    
+    @classmethod
+    def verify_file_exists(cls):
+        if not Path(cls.history_file).is_file():
+            cls.write([{}])
+        
     
     @classmethod
     def data(cls) -> list[dict]:
