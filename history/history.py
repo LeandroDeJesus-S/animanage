@@ -125,7 +125,7 @@ class WatchHistory:
         """
         if not os.path.isfile(cls.history_file):
             log.warning('history file not found')
-            return
+            return False
         
         data = cls.data()
         log.debug(f'{len(data)} found.')
@@ -137,10 +137,11 @@ class WatchHistory:
             if anime == anm_to_rm and cls.remove_confirmation(dt['anime']):
                 data.pop(index)
                 
-                msg = f'\033[32mRemovido com sucesso.\033[m'
+                msg = f'\033[32m"{anime}" Removido com sucesso.\033[m'
                 log.info(msg)
                 
                 print(f'\033[33m{msg}\033[m')
+                cls.write(data)
                 return True
         
         msg = f'\033[33m"{name}"\033[m não foi encontrado.'

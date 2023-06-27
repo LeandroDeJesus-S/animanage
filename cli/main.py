@@ -41,7 +41,7 @@ elif arguments.HISTORY:
     if arguments.ADD_TO_HISTORY and arguments.ADD_TO_HISTORY[0] is not None:
         arguments.invoker.execute_command('--history --add')
     
-    elif arguments.HISTORY and arguments.REMOVE_FROM_HISTORY:
+    elif arguments.REMOVE_FROM_HISTORY:
         arguments.invoker.execute_command('--history --remove')
 
     else:
