@@ -378,24 +378,25 @@ class Releases:
         the anime is not in database.
         """
         start_time = time.time()
-        self.db_engine.connect(self.database)
         
         print('Buscando animes...')
         anime_releases = self.site.get_anime_releases()
         print('Buscando episódios...')
         ep_releases = self.site.get_ep_releases()
         print('Salvando na base de dados...')
+        self.db_engine.connect(self.database)
+        
         tot_updates = 0
-        for anime, ep in zip_longest(anime_releases, ep_releases):
-            name = anime['anime']
+        for anime, ep in zip_longest(anime_releases, ep_releases, fillvalue={}):
+            name = anime.get('anime')
             anime_exists = self.site_anime_release_db.verify_if_exists(name)
-            if not anime_exists: 
+            if anime and not anime_exists: 
                 self.site_anime_release_db.save_releases([anime])
                 tot_updates += 1
             
-            title = ep['title']
+            title = ep.get('title')
             ep_exists = self.site_ep_release_db.verify_if_exists(title)
-            if not ep_exists:
+            if ep and not ep_exists:
                 self.site_ep_release_db.save_releases([ep])
                 tot_updates += 1
         

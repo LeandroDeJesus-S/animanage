@@ -106,7 +106,7 @@ class SerieDb(ProductionsDbInterface):
         
         self.ALIAS_FILE = Path('animesonline_online/aliases.json').absolute()
 
-    def save_production(self, data: list[dict[str, str | int | float]]) -> None:
+    def save_production(self, data: list[dict[str, str | int | float]]) -> bool:
         """save the productions data in database
 
         Args:
@@ -115,13 +115,19 @@ class SerieDb(ProductionsDbInterface):
         Obs:
             The data values should have the same order as the database fields.
         """
-        for d in data:
-            self.db_engine.insert(
-                table=self.table,
-                fields=self.fields,
-                values=(*d.values(),)
-            )
-            sleep(.1)
+        try:
+            for d in data:
+                self.db_engine.insert(
+                    table=self.table,
+                    fields=self.fields,
+                    values=(*d.values(),)
+                )
+                sleep(.1)
+            return True
+        
+        except Exception as exp:
+            log.error(exp)
+            return False
 
     def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:
         result = self.db_engine.select(

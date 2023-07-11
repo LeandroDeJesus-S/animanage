@@ -149,6 +149,7 @@ class SerieDb(ProductionsDbInterface):
             return True
         
         except Exception as error:
+            log.error(error)
             return False
     
     def verify_if_exists(self, data, insensitive: bool = False, limit: int = 60) -> bool:

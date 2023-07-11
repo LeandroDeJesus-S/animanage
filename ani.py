@@ -3,9 +3,9 @@ from colorama import init
 import logging as log
 
 log.basicConfig(
-    filename='logs.log', level=log.DEBUG, filemode='w', format='%(levelname)s - %(module)s > %(funcName)s > line %(lineno)d - %(message)s'
+    filename='logs.log', level=log.DEBUG, filemode='w', 
+    format='%(levelname)s - %(module)s > %(funcName)s > line %(lineno)d - %(message)s'
 )
-# TODO: Colocar nomes melhores nas classes dos sites e melhorar os logs.
 
 
 def main():
@@ -18,4 +18,4 @@ if __name__ == '__main__':
         AutoUpdate.do_update()
         main()
     except Exception as exp:
-        _ = log.error(exp), log.error(exp)
+        log.error(exp)
