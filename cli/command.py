@@ -515,6 +515,10 @@ class History:
     def remove_from_history(self, name) -> None:
         """remove an anime from history"""
         self.history.remove(name)
+    
+    def continue_by_history(self, name: str):
+        """redirect to next ep registered in the history"""
+        self.history.continue_by_history(name)
 
 
 class ShowHistory(ICommand):
@@ -543,6 +547,15 @@ class RemoveFromHistory(ICommand):
 
     def execute(self) -> None:
         self.history.remove_from_history(self.name)
+        
+
+class ContinueByHistory(ICommand):
+    def __init__(self, history: History, name: str) -> None:
+        self.history = history
+        self.name = name
+    
+    def execute(self):
+        self.history.continue_by_history(self.name)
 
 
 class Invoker:

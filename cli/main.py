@@ -43,6 +43,9 @@ elif arguments.HISTORY:
     
     elif arguments.REMOVE_FROM_HISTORY:
         arguments.invoker.execute_command('--history --remove')
+    
+    elif arguments.CONTINUE_HISTORY:
+        arguments.invoker.execute_command('--history --continue')
 
     else:
         arguments.invoker.execute_command('--history')

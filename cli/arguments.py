@@ -69,6 +69,12 @@ program.add_argument(
     '--history', '-H', action='store_true', dest='history',
     default=False, help=messages.history_msg
 )
+
+program.add_argument(
+    '--continue', '-c', type=str, dest='continue_history',
+    default='', help=messages.continue_hist_msg
+)
+
 program.add_argument(
     '-fn', '--filtername', type=str, dest='filtername', 
     metavar='<name>', help=messages.fn_msg
@@ -110,6 +116,7 @@ LISTSITES = args.listsites
 CHANGESITE = args.changesite
 
 HISTORY = args.history
+CONTINUE_HISTORY = args.continue_history
 FILTERNAME = args.filtername
 ADD_TO_HISTORY = args.add
 REMOVE_FROM_HISTORY = args.remove
@@ -140,6 +147,8 @@ ch_site = command.ChangeSite(CHANGESITE, sites)
 ls_sites = command.ListSites(sites)
 
 history = command.History(FILTERNAME)
+
+continue_by_history_cmd = command.ContinueByHistory(history, CONTINUE_HISTORY)
 show_history_cmd = command.ShowHistory(history)
 add_to_history_cmd = command.AddToHistory(
     history, ADD_TO_HISTORY[0], ADD_TO_HISTORY[1], ADD_TO_HISTORY[2]
@@ -166,5 +175,6 @@ invoker.add_command('--listsites', ls_sites)
 invoker.add_command('--changesite', ch_site)
 
 invoker.add_command('--history', show_history_cmd)
+invoker.add_command('--history --continue', continue_by_history_cmd)
 invoker.add_command('--history --add', add_to_history_cmd)
 invoker.add_command('--history --remove', remove_from_history_cmd)

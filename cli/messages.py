@@ -21,6 +21,7 @@ USAGE = f"""
                 --changesite <site_name>
                 
                 --history/-H
+                            -c/--continue <name>
                             -fn/--filtername <name>
                             --add <name> <se> <ep>
                             -r/--remove <name>
@@ -52,6 +53,7 @@ listsites_msg = 'Lista os sites disponíveis.'
 changesite_msg = 'Seleciona um site.'
 
 history_msg = 'Mostra o histórico de uso do -w e -wl.'
+continue_hist_msg = 'Redireciona para o próximo episódio do registrado no histórico'
 fn_msg = 'Filtra pelo nome passado.'
 add_msg = 'Adiciona ou atualiza no histórico.'
 remove_msg = "remove um registro do histórico."

@@ -1,5 +1,6 @@
 import json
 import os.path
+import sys
 from datetime import datetime
 from locale import LC_ALL, setlocale
 import logging as log
@@ -169,3 +170,18 @@ class WatchHistory:
             print('\033[31mOpção inválida!\033[m')
             log.warning('invalid option')
             return False
+
+    @classmethod
+    def continue_by_history(cls, name: str):
+        """redirect to next ep of the anime in the history"""
+        py_cmd = 'python' if 'win' in sys.platform else 'python3'
+            
+        for register in cls.data():
+            anime, se, ep, _ = register.values()
+            anm_arg = f'"{anime}"' if len(anime) > 1 else anime
+            if name.lower() == anime.lower():
+                os.system(f'{py_cmd} ani.py -w {anm_arg} -s {se} -e {ep + 1}')
+                break
+        
+        else:
+            print('\033[33mAnime não encontrado.\033[m')
