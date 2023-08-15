@@ -1,16 +1,18 @@
-import json
-import os.path
-import sys
 from datetime import datetime
 from locale import LC_ALL, setlocale
-import logging as log
 from pathlib import Path
 
+import json
+import logging as log
+import os.path
+import sys
+
+import pandas as pd
 # TODO: sometimes the history file is wrote with extra chars
 
 class WatchHistory:
     MAX_CHAR_SHOW = 15
-    history_file = Path('history').absolute() / 'history.json'
+    history_file = Path(__file__).parent.absolute() / 'history.json'
     
     def __init__(self) -> None:
         self.verify_file_exists()
@@ -42,7 +44,7 @@ class WatchHistory:
         
     @classmethod
     def register(cls, anime: str, se: int, ep: int):
-        """register a new anime in the history
+        """register a new anime or update an existing anime in the history
 
         Args:
             anime (str): anime name
@@ -73,17 +75,49 @@ class WatchHistory:
                     
     @classmethod
     def show(cls, filter: str|None=None):
+        """Show the history table
+
+        Args:
+            filter (str | None, optional): anime name to filter. Defaults to None.
+        """            
         log.info(f'filter by : "{filter}"')
         
-        with open(cls.history_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            log.debug(f'{len(data)} data found from {cls.history_file}')
-            
-            cls.__print_history(data, filter)
+        data = cls.data()
+        log.debug(f'{len(data)} data found from {cls.history_file}')
+        
+        cls.__print_history(data, filter)
         log.info(f'history showed successfully')
+    
+    @classmethod
+    def make_table(cls, data: list[dict]):
+        """construct the table of the animes history"""
+        c1, c2, c3, c4 = 'Anime SE Ep Date'.split()
+        line = lambda: print('+' + '~' * 73 + '+')
+        
+        line()
+        print(f'|{c1:^15}|{c2:^15}|{c3:^15}|{c4:^25}|')
+        line()
+        
+
+        for d in data:
+            anime, se, ep, date = d.values()
+            anime = anime[:cls.MAX_CHAR_SHOW]
+            
+            print(f'|{anime:^15}|{se:^15}|{ep:^15}|{date:^25}|')
+            line()
+    
+    @classmethod
+    def __print_history_filter(cls, data: list[dict], filter: str):
+        """Make the print just for the filtered results"""
+        anm_filter = [d for d in data if filter.lower() in d['anime'].lower()]
+        if not anm_filter:
+            print('Nenhum resultado encontrado')
+            return
+        
+        cls.make_table(anm_filter)
 
     @classmethod
-    def __print_history(cls, data: list[dict], filter=None):
+    def __print_history(cls, data: list[dict], filter: str|None=None):
         """A pretty printer in table format to show the history
 
         Args:
@@ -93,26 +127,13 @@ class WatchHistory:
         log.debug(f'{len(data)} data received')
         log.debug(f'filter by : "{filter}"')
         
-        c1, c2, c3, c4 = 'Anime SE Ep Date'.split()
-        line = lambda: print('+' + '~' * 73 + '+')
+        if filter is not None:
+            cls.__print_history_filter(data, filter)
+            return
         
-        line()
-        print(f'|{c1:^15}|{c2:^15}|{c3:^15}|{c4:^25}|')
-        line()
-
-        for d in data:
-            anime, se, ep, date = d.values()
-            if filter is None:
-                anime = anime[:cls.MAX_CHAR_SHOW]
-                print(f'|{anime:^15}|{se:^15}|{ep:^15}|{date:^25}|')
-                
-            if filter is not None and anime == filter:
-                anime = anime[:cls.MAX_CHAR_SHOW]
-                print(f'|{anime:^15}|{se:^15}|{ep:^15}|{date:^25}|')
-                log.info(f'filter by "{anime}" found.')
-                
-        line()
+        cls.make_table(data)
         log.debug(f'printed successfully')
+        
 
     @classmethod
     def remove(cls, name: str) -> bool:
