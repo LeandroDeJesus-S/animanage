@@ -7,21 +7,17 @@ import logging as log
 import os.path
 import sys
 
-import pandas as pd
-# TODO: sometimes the history file is wrote with extra chars
-
 class WatchHistory:
     MAX_CHAR_SHOW = 15
     history_file = Path(__file__).parent.absolute() / 'history.json'
     
     def __init__(self) -> None:
-        self.verify_file_exists()
+        self.create_file_if_not_exists()
     
     @classmethod
-    def verify_file_exists(cls):
+    def create_file_if_not_exists(cls):
         if not Path(cls.history_file).is_file():
             cls.write([{}])
-        
     
     @classmethod
     def data(cls) -> list[dict]:
@@ -133,7 +129,28 @@ class WatchHistory:
         
         cls.make_table(data)
         log.debug(f'printed successfully')
+
+    @staticmethod
+    def remove_confirmation(anm: str) -> bool:
+        """get the confirmation to remove
+
+        Args:
+            anm (str): anime name to remove
+
+        Returns:
+            bool: True if removed successfully else False
+        """
+        user_option = input(
+            f'\033[33mRemover "{anm}" do histórico? (s/n):\033[m'
+        ).lower()
         
+        options = {'s': True, 'n': False}
+        try:
+            return options[user_option]
+        except KeyError:
+            print('\033[31mOpção inválida!\033[m')
+            log.warning('invalid option')
+            return False
 
     @classmethod
     def remove(cls, name: str) -> bool:
@@ -170,27 +187,6 @@ class WatchHistory:
         print(msg)
         log.debug(msg)
         return False
-        
-    @staticmethod
-    def remove_confirmation(anm: str) -> bool:
-        """get the confirmation to remove
-
-        Args:
-            anm (str): anime name to remove
-
-        Returns:
-            bool: True if removed successfully else False
-        """
-        confirm = input(
-            f'\033[33mRemover "{anm}" do histórico? (s/n):\033[m '
-        ).lower()
-        resp = {'s': True, 'n': False}
-        try:
-            return resp[confirm]
-        except KeyError:
-            print('\033[31mOpção inválida!\033[m')
-            log.warning('invalid option')
-            return False
 
     @classmethod
     def continue_by_history(cls, name: str):
@@ -199,9 +195,9 @@ class WatchHistory:
             
         for register in cls.data():
             anime, se, ep, _ = register.values()
-            anm_arg = f'"{anime}"' if len(anime) > 1 else anime
+
             if name.lower() == anime.lower():
-                os.system(f'{py_cmd} ani.py -w {anm_arg} -s {se} -e {ep + 1}')
+                os.system(f'{py_cmd} ani.py -w "{anime}" -s {se} -e {ep + 1}')
                 break
         
         else:
