@@ -4,7 +4,7 @@ import logging as log
 
 log.basicConfig(
     filename='logs.log', level=log.DEBUG, filemode='w', 
-    format='%(levelname)s - %(module)s > %(funcName)s > line %(lineno)d - %(message)s'
+    format='%(levelname)s - %(asctime)s - %(module)s > %(funcName)s > line %(lineno)d - %(message)s'
 )
 
 

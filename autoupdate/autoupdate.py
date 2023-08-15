@@ -10,10 +10,10 @@ class AutoUpdate:
     INTERVAL_DAYS = 3
     
     def __init__(self) -> None:
-        self.verify_file_exists()
+        self.create_file_if_not_exists()
     
     @classmethod
-    def verify_file_exists(cls):
+    def create_file_if_not_exists(cls):
         if not cls.TIMEFILE.exists():
             cls.TIMEFILE.touch()
     

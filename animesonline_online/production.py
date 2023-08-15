@@ -143,6 +143,7 @@ class SerieDb(ProductionsDbInterface):
             self.table, where=self.fields[0], like=name,
             limit=limit, insensitive=insensitive
         )
+        log.debug(result)
         if not result:
             return ''
         return result[0][1]
