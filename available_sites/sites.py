@@ -14,7 +14,7 @@ parser = Parsers.use_bs4()
 requester = Requesters.use_requests()
 db_engine = databases.SQLite()
 
-SITEACTIVE_FILE = Path('available_sites/.site-active').absolute()
+SITEACTIVE_FILE = Path(__file__).parent.absolute() / '.site-active'
 if not SITEACTIVE_FILE.exists():
     SITEACTIVE_FILE.touch()
 

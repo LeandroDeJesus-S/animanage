@@ -2,11 +2,12 @@ from datetime import datetime, timedelta
 import logging as log
 from pathlib import Path
 
-from cli import command, arguments
+from cli import arguments
+from utils.decorators import try_exceptions
 
 
 class AutoUpdate:
-    TIMEFILE = Path('autoupdate/.time').absolute()
+    TIMEFILE = Path(__file__).parent.absolute() / '.time'
     INTERVAL_DAYS = 3
     
     def __init__(self) -> None:
@@ -18,6 +19,7 @@ class AutoUpdate:
             cls.TIMEFILE.touch()
     
     @classmethod
+    @try_exceptions(logger=log, log_type='error')
     def update(cls):
         with open(cls.TIMEFILE, 'r+') as f:
             last_up_time = datetime.fromtimestamp(float(f.readline()))
@@ -35,10 +37,3 @@ class AutoUpdate:
                 f.seek(0)
                 f.write(f'{datetime.timestamp(now)}')
                 log.info('time updated')
-    
-    @classmethod
-    def do_update(cls):
-        try:
-            cls.update()
-        except Exception as e:
-            log.error(e)

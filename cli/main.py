@@ -1,11 +1,12 @@
 from cli import arguments
-from history import history
 
 if arguments.WATCH:
     arguments.invoker.execute_command('-w')
+    arguments.invoker.log_command('-w')
 
 elif arguments.WATCHLATEST:
     arguments.invoker.execute_command('-wl')
+    arguments.invoker.log_command('-wl')
 
 elif arguments.LIST_ANIME_RELEASES:
     arguments.invoker.execute_command('-la')
